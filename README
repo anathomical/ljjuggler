@@ -1,0 +1,5 @@
+LJ Juggler is an extension for Google Chrome that allows for easy switching between accounts.
+
+It's a total hack-job.  While no code was used from the LJlogin project (an add-on for Firefox which does something similar, only much more cleanly), a large debt of gratitude is owed them since looking through their code helped with understanding the LiveJournal authenticaion process as well as figuring out how to structure this code.
+
+Some of the choices made in the code here are forced by the still-in-progress nature of some Chrome extension APIs.  Specifically the lack of non-dev cookie manipulation means that all cookie exchange has to be handled through server calls.
