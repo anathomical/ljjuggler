@@ -9,7 +9,6 @@
 		div
 		{
 			padding:2px;
-			padding-left:5px;
 			margin:2px;
 			width:120px;
 		}
@@ -57,6 +56,7 @@
 				logout(last_account);
 				document.getElementById(last_account.username).setAttribute("class","nohover");
 				localStorage["lastSelected"] = "";
+				window.close();
 			};
 			return this_div;
 		}
@@ -99,7 +99,7 @@
 		}
 		function loginas(this_account)
 		{
-			last_account = JSON.parse(localStorage["lastSelected"]);
+			if(localStorage["lastSelected"]) var last_account = JSON.parse(localStorage["lastSelected"]);
 			if(last_account) logout(last_account);
 			conn = new XMLHttpRequest();
 
@@ -118,7 +118,7 @@
 		//	conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		//	conn.send(params);
 
-			// This is MUCH less secure than the method above (note password in plaintext).  But it works.
+			// This is much hackier than the above.  But it works.
 			var params = "user=" + this_account.username + 
 						"&password=" + this_account.password;
 			conn.open("POST", "https://www.livejournal.com/login.bml", false);
@@ -126,8 +126,9 @@
 			conn.send(params);
 
 			localStorage["lastSelected"] = JSON.stringify(this_account);
-			document.getElementById(last_account.username).setAttribute("class","nohover");
+			if(last_account.username) document.getElementById(last_account.username).setAttribute("class","nohover");
 			document.getElementById(this_account.username).setAttribute("class","selected");
+			window.close();
 		}
 		function logout(this_account)
 		{
