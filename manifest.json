@@ -1,9 +1,10 @@
 {
   "name":"LJ Account Juggler",
-  "version":"1.2.3",
+  "version":"2.0",
   "description":"A total hack-job solution for LiveJournal account switching in Chrome",
   "update_url":"http://rushin-doll.net/lj-juggler/updates.xml",
   "options_page":"options.html",
+  "background_page":"background.html",
   "icons":
   { 
     "48": "icon48.png",

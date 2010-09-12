@@ -53,7 +53,7 @@
 			this_div.onclick = function()
 			{
 				var last_account = JSON.parse(localStorage["lastSelected"]);
-				logout(last_account);
+				chrome.extension.sendRequest({command:"logout",account:last_account});
 				document.getElementById(last_account.username).setAttribute("class","nohover");
 				localStorage["lastSelected"] = "";
 				window.close();
@@ -82,74 +82,10 @@
 			{ 
 				return function ()
 				{
-					loginas(this_account);
+					chrome.extension.sendRequest({command:"login",account:this_account});
 				};
 			}(this_account);
 			return this_div;
-		}
-		function getLJchallenge()
-		{
-			var conn = new XMLHttpRequest();
-			var params = "mode=getchallenge";
-			conn.open("POST","http://www.livejournal.com/interface/flat",false);
-			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			conn.send(params);
-			challenge = conn.responseText.split("\n")[3];
-			return challenge;
-		}
-		function loginas(this_account)
-		{
-			if(localStorage["lastSelected"]) var last_account = JSON.parse(localStorage["lastSelected"]);
-			if(last_account) logout(last_account);
-			conn = new XMLHttpRequest();
-
-			
-			// This should work.  No idea why it doesn't.
-			// Thus we are forced to fall back on the hackery below.
-			// For whatever reason, using the interface call to login does not set cookies.
-			//var challenge = getLJchallenge();
-			//var response = md5(challenge + md5(this_account.password));
-			//var params = "mode=login" +
-			//			"&user=" + this_account.username +
-			//			"&auth_method=challenge" +
-			//			"&auth_challenge=" + challenge +
-			//			"&auth_response=" + response;
-			//conn.open("POST", "http://www.livejournal.com/interface/flat",false);
-			//conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			//conn.send(params);
-
-			// This is much hackier than the above.  But it works.
-			var params = "user=" + this_account.username + 
-						"&password=" + this_account.password +
-						"&remember_me=true";
-			conn.open("POST", "https://www.livejournal.com/login.bml", false);
-			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			conn.send(params);
-
-			localStorage["lastSelected"] = JSON.stringify(this_account);
-			if(last_account.username) document.getElementById(last_account.username).setAttribute("class","nohover");
-			document.getElementById(this_account.username).setAttribute("class","selected");
-			window.close();
-		}
-		function logout(this_account)
-		{
-			var challenge = getLJchallenge();
-			var response = md5(challenge + md5(this_account.password));
-			conn = new XMLHttpRequest()
-			var params = "mode=sessionexpire" +
-						"&user=" + this_account.username +
-						"&auth_method=challenge" +
-						"&auth_challenge=" + challenge +
-						"&auth_response=" + response +
-						"&expireall=1";
-					// If I can find some way to parse out the sessid during the
-					// hacked together login process I'm using, use expire_id_num
-					// instead of expire all so as to not disrupt other machines'
-					// login status.
-					//	"&expire_id_num=s" + this_account.session;
-			conn.open("POST", "http://www.livejournal.com/interface/flat",false);
-			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			conn.send(params);
 		}
 		function accountsort(account_one, account_two)
 		{
