@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title>Account Juggler - Options</title>
+		<script type="text/javascript" src="md5.js"></script>
 		<script type="text/javascript">
 function drawlist()
 {
@@ -45,7 +46,7 @@ function delete_account(username)
 function save_new_account()
 {
 	username = document.getElementById("username").value;
-	password = document.getElementById("password").value;
+	password = md5(document.getElementById("password").value);
 	if(username && password)
 	{
 		var account_list;

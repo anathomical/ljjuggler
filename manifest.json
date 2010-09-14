@@ -18,6 +18,7 @@
   },
   "permissions":
   [
+	"cookies",
     "http://*.livejournal.com/*",
 	"https://*.livejournal.com/*"
   ]

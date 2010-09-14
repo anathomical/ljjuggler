@@ -41,6 +41,7 @@
 				document.getElementById("user_list").appendChild(next_option);
 			}
 			document.getElementById("option_list").appendChild(build_logout_div());
+			console.log("test1");
 		}
 		function build_logout_div()
 		{
@@ -53,7 +54,7 @@
 			this_div.onclick = function()
 			{
 				var last_account = JSON.parse(localStorage["lastSelected"]);
-				chrome.extension.sendRequest({command:"logout",account:last_account});
+				chrome.extension.sendRequest({"command":"logout","account":last_account});
 				document.getElementById(last_account.username).setAttribute("class","nohover");
 				localStorage["lastSelected"] = "";
 				window.close();
@@ -82,7 +83,13 @@
 			{ 
 				return function ()
 				{
-					chrome.extension.sendRequest({command:"login",account:this_account});
+					if(localStorage["lastSelected"]) var last_account = JSON.parse(localStorage["lastSelected"]);
+					console.log("Send login request to background...");
+					chrome.extension.sendRequest({"command":"login","account":this_account});
+					if(last_account.username) document.getElementById(last_account.username).setAttribute("class","nohover");
+					document.getElementById(this_account.username).setAttribute("class","selected");
+					console.log("Close popup window...");
+					window.close();
 				};
 			}(this_account);
 			return this_div;

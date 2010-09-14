@@ -1,21 +1,31 @@
 <html>
 	<script type="text/javascript" src="md5.js"></script>
 	<script type="text/javascript">
-	var ljjuggler-version = "2.0"
+	var ljjuggler_version = "2.0";
 	
 	function page_loaded()
 	{
-		if(localStorage["ljjuggler-version"] < ljjuggler-version)
+		if(localStorage["ljjuggler_version"] < ljjuggler_version)
 		{
-			alert("LJ Juggler has been updated to the latest version: " + ljjuggler-version + "\n\nCheck out the change log at: http://rushin-doll.net/lj-juggler/change-log.html");
-			localStorage["ljjuggler-version"] = ljjuggler-version;
+			version_update(localStorage["ljjuggler_version"]);
 		}
-		chrome.extesion.onRequest.addListener(
+		console.log("Background page loaded.");
+		chrome.extension.onRequest.addListener(
 			function(request, sender, sendResponse)
 			{
-				if(request.command == "logout") logout(request.account);
-				else if(request.command == "login") loginas(request.account);
+				console.log("Received request...");
+				if(request.command == "logout")
+				{
+					console.log("Logging out...");
+					logout(request.account);
+				}
+				else if(request.command == "login")
+				{
+					console.log("Logging in as... " + request.account.username);
+					loginas(request.account);
+				}
 				sendResponse({});
+				console.log("Request handled, response sent...");
 			});
 	}
 	function getLJchallenge()
@@ -30,57 +40,82 @@
 	}
 	function loginas(this_account)
 	{
-		if(localStorage["lastSelected"]) var last_account = JSON.parse(localStorage["lastSelected"]);
-		if(last_account) logout(last_account);
+//		if(localStorage["lastSelected"]) var last_account = JSON.parse(localStorage["lastSelected"]);
+		if(chrome.cookies.get({"url":"http://livejournal.com/","name":"ljsession"}, function(cookie) { return cookie; }))
+		{
+			console.log("Found existing login cookie.");
+			logout(last_account);
+		}
+
+		console.log("Beginning the login dance...");
 		conn = new XMLHttpRequest();
-
-		
-		// This should work.  No idea why it doesn't.
-		// Thus we are forced to fall back on the hackery below.
-		// For whatever reason, using the interface call to login does not set cookies.
-		//var challenge = getLJchallenge();
-		//var response = md5(challenge + md5(this_account.password));
-		//var params = "mode=login" +
-		//			"&user=" + this_account.username +
-		//			"&auth_method=challenge" +
-		//			"&auth_challenge=" + challenge +
-		//			"&auth_response=" + response;
-		//conn.open("POST", "http://www.livejournal.com/interface/flat",false);
-		//conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		//conn.send(params);
-
-		// This is much hackier than the above.  But it works.
-		var params = "user=" + this_account.username + 
-					"&password=" + this_account.password +
-					"&remember_me=true";
-		conn.open("POST", "https://www.livejournal.com/login.bml", false);
-		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		conn.send(params);
-
-		localStorage["lastSelected"] = JSON.stringify(this_account);
-		if(last_account.username) document.getElementById(last_account.username).setAttribute("class","nohover");
-		document.getElementById(this_account.username).setAttribute("class","selected");
-		window.close();
-	}
-	function logout(this_account)
-	{
 		var challenge = getLJchallenge();
-		var response = md5(challenge + md5(this_account.password));
-		conn = new XMLHttpRequest()
-		var params = "mode=sessionexpire" +
+		var response = md5(challenge + this_account.password);
+		var params = "mode=sessiongenerate" +
 					"&user=" + this_account.username +
 					"&auth_method=challenge" +
 					"&auth_challenge=" + challenge +
-					"&auth_response=" + response +
-					"&expireall=1";
-				// If I can find some way to parse out the sessid during the
-				// hacked together login process I'm using, use expire_id_num
-				// instead of expire all so as to not disrupt other machines'
-				// login status.
-				//	"&expire_id_num=s" + this_account.session;
+					"&auth_response=" + response;
 		conn.open("POST", "http://www.livejournal.com/interface/flat",false);
 		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		conn.send(params);
+
+		console.log("Login negotiations completed.  Saving session data.");
+		var ljsession = conn.responseText.split("\n")[1];
+		var now = new Date();
+		var cookie_to_set = {};
+		cookie_to_set.url = "http://livejournal.com/";
+		cookie_to_set.domain = "livejournal.com";
+		cookie_to_set.name = "ljsession";
+		cookie_to_set.value = ljsession;
+		cookie_to_set.expirationDate = now.valueOf()+(1000*60*60*24*365);
+		chrome.cookies.set(cookie_to_set);
+		localStorage["lastSelected"] = JSON.stringify(this_account);
+
+	}
+	function logout(this_account)
+	{
+		console.log("Logout subroutine started...");
+		var challenge = getLJchallenge();
+		var response = md5(challenge + this_account.password);
+		var session_cookie = chrome.cookies.get({"url":"http://livejournal.com","name":"ljsession"}, function(cookie) { console.log("Do things! " + cookie.value); return cookie; });
+		console.log("Found the cookie: " + session_cookie.value);
+		var cookie_fields = session_cookie.split(":");
+		var sessid = cookie_fields[2].substring(1);
+		conn = new XMLHttpRequest()
+		var params = "mode=sessionexpire" +
+					"&user=" + this_account.username +
+					"&auth_method=cookie" +
+//					"&auth_challenge=" + challenge +
+//					"&auth_response=" + response +
+					"&expire_id_" + sessid + "=1";
+		conn.open("POST", "http://www.livejournal.com/interface/flat",false);
+		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		conn.setRequestHeader("X-LJ-Auth","cookie");
+		conn.setRequestHeader("Cookie","ljsession=" + session_cookie);
+		conn.setRequestHeader("Cookie","ljmastersession=" + session_cookie);
+		conn.setRequestHeader("Cookie","ljloggedin=" + cookie_fields[1] + ":" + cookie_fields[2]);
+		console.log("Logging out with cookie: " + session_cookie.value);
+		conn.send(params);
+		console.log("Deleting cookie...");
+		chrome.cookies.remove(session_cookie);
+	}
+	function version_update(old_version)
+	{
+		alert("LJ Juggler has been updated to the latest version: " + ljjuggler_version + "\n\nCheck out the change log at: http://rushin-doll.net/lj-juggler/change-log.html");
+		localStorage["ljjuggler_version"] = ljjuggler_version;
+		if(old_version < "2.0")
+		{
+				// Resave passwords as MD5 hashes for a slight security bump.
+			var old_account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+			var new_account_list
+			for(var account in old_account_list)
+			{
+				account.password = md5(account.password);
+				new_account_list.push(account);
+			}
+			localStorage["lj_juggler_accounts"] = JSON.stringify(new_account_list);
+		}
 	}
 
 	</script>
