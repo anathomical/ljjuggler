@@ -3,15 +3,23 @@
 		<title>LJ Juggler Change Log</title>
 	</head>
 	<body>
+		<p>LJ Juggler</p>
+		<p>A Google Chrome extension for switching between user accounts on LiveJournal.</p>
+		<p><a href="http://rushin-doll.net/lj-juggler/">http://rushin-doll.net/lj-juggler/</a></p>
+		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.
+
 		<h3>Version 2.0</h3>
 			<p>User-facing:</p>
 			<ul>
 				<li>A pop-up alert to appear whenever the extension updates to a new version.</li>
+				<li>Changed logout procedures so that only the current session is ended.  This fixes the long-standing problem that would cause LJ Juggler to interfere with other instances of itself on other machines or with instances of ljlogin on Firefox, or with just about any other login system.  They should all play nice now.</li>
 			</ul>
 			<p>Behind-the-scenes:</p>
 			<ul>
-				<li>Instituted a background page and moved most of the code to it.</li>
+				<li>Instituted a background page and moved most of the code to it for efficiency and to allow users to do other things while logins change.</li>
 				<li>Changed password storage to store hashes rather than plaintext for slightly better local security.</li>
+				<li>Shifted to cookie-based login and authentication (the same model used by ljlogin for Firefox).  Security bump, much more accurate at recognizing which account is logged in.</li>
 			</ul>
+
 	</body>
 </html>
