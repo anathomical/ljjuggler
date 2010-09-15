@@ -1,14 +1,9 @@
 <html>
 	<script type="text/javascript" src="md5.js"></script>
 	<script type="text/javascript">
-	var ljjuggler_version = "2.0";
 	
 	function page_loaded()
 	{
-		if(localStorage["ljjuggler_version"] < ljjuggler_version)
-		{
-			version_update(localStorage["ljjuggler_version"]);
-		}
 		chrome.extension.onRequest.addListener(
 			function(request, sender, sendResponse)
 			{
@@ -91,26 +86,6 @@
 			chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
 		}
 		else console.log("No cookie found, no need to log out.");
-	}
-	function version_update(old_version)
-	{
-		alert("LJ Juggler has been updated to the latest version: " + ljjuggler_version + "\n\nCheck out the change log at: http://rushin-doll.net/lj-juggler/change-log.html");
-		localStorage["ljjuggler_version"] = ljjuggler_version;
-		if(old_version < "2.0")
-		{
-				// Resave passwords as MD5 hashes for a slight security bump.
-			var old_account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-			var new_account_list
-			for(var account in old_account_list)
-			{
-				account.password = md5(account.password);
-				new_account_list.push(account);
-			}
-			localStorage["lj_juggler_accounts"] = JSON.stringify(new_account_list);
-
-			// We now use a cookie check to see who a use is logged in as.  So clean up the old data.
-			localStorage.remove("lastSelected");
-		}
 	}
 	function update_account(change_me)
 	{

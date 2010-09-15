@@ -32,6 +32,7 @@
 		<script type="text/javascript">
 		function page_loaded()
 		{
+			update_check();
 			account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
 			account_list.sort(accountsort);
 			for(var i = 0; account_list[i]; i++)
@@ -125,6 +126,52 @@
 				}
 			}
 			return 0;
+		}
+		function update_check()
+		{
+			var current_version = getVersion();
+			console.log("checking version - current: " + current_version + " - stored: " + localStorage["ljjuggler_version"]);
+			if(!localStorage["ljjuggler_version"] || localStorage["ljjuggler_version"] < current_version)
+			{
+				version_update(localStorage["ljjuggler_version"], current_version);
+			}
+		}
+		function getVersion()
+		{
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
+			xhr.send(null);
+			var manifest = JSON.parse(xhr.responseText);
+			return manifest.version;
+		}
+		function version_update(old_version, current_version)
+		{
+			console.log("alert user to update");
+			alert("LJ Juggler has been updated to the latest version: " + current_version + "\n\nCheck out the change log at: http://rushin-doll.net/lj-juggler/change-log.html");
+			console.log("update stored version");
+			localStorage["ljjuggler_version"] = current_version;
+			console.log("run updates in order");
+			if(old_version < "2.0")
+			{
+				console.log("2.0 updates in progress");
+					// Resave passwords as MD5 hashes for a slight security bump.
+				var old_account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+				var new_account_list
+				console.log("update passwords to hashed versions");
+				for(var i = 0; i < old_account_list.length; i++)
+				{
+					var account = old_account_list[i];
+					account.password = md5(account.password);
+					console.log("replacing " + old_account_list[i].password + " with " + account.password);
+					new_account_list.push(account);
+				}
+				console.log("push changes to localStorage");
+				localStorage["lj_juggler_accounts"] = JSON.stringify(new_account_list);
+
+				// We now use a cookie check to see who a use is logged in as.  So clean up the old data.
+				console.log("removing lastSelected from localStorage");
+				localStorage.remove("lastSelected");
+			}
 		}
 		</script>
 	</head>
