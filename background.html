@@ -9,23 +9,29 @@
 		{
 			version_update(localStorage["ljjuggler_version"]);
 		}
-		console.log("Background page loaded.");
 		chrome.extension.onRequest.addListener(
 			function(request, sender, sendResponse)
 			{
-				console.log("Received request...");
+				console.log("setting interval for animation");
 				if(request.command == "logout")
 				{
 					console.log("Logging out...");
-					logout(request.account);
+					chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
+						{
+							logout_this_cookie(cookie);
+							sendResponse({});
+						})
 				}
 				else if(request.command == "login")
 				{
 					console.log("Logging in as... " + request.account.username);
-					loginas(request.account);
+					chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
+						{
+							logout_this_cookie(cookie);
+							loginas(request.account);
+							sendResponse({});
+						})
 				}
-				sendResponse({});
-				console.log("Request handled, response sent...");
 			});
 	}
 	function getLJchallenge()
@@ -40,13 +46,6 @@
 	}
 	function loginas(this_account)
 	{
-//		if(localStorage["lastSelected"]) var last_account = JSON.parse(localStorage["lastSelected"]);
-		if(chrome.cookies.get({"url":"http://livejournal.com/","name":"ljsession"}, function(cookie) { return cookie; }))
-		{
-			console.log("Found existing login cookie.");
-			logout(last_account);
-		}
-
 		console.log("Beginning the login dance...");
 		conn = new XMLHttpRequest();
 		var challenge = getLJchallenge();
@@ -62,43 +61,36 @@
 
 		console.log("Login negotiations completed.  Saving session data.");
 		var ljsession = conn.responseText.split("\n")[1];
+		var session_fields = ljsession.split(":");
 		var now = new Date();
-		var cookie_to_set = {};
-		cookie_to_set.url = "http://livejournal.com/";
-		cookie_to_set.domain = "livejournal.com";
-		cookie_to_set.name = "ljsession";
-		cookie_to_set.value = ljsession;
-		cookie_to_set.expirationDate = now.valueOf()+(1000*60*60*24*365);
-		chrome.cookies.set(cookie_to_set);
-		localStorage["lastSelected"] = JSON.stringify(this_account);
-
+		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljsession", "value":ljsession, "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
+		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
+		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljmastersession", "value":ljsession, "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
+		this_account.uid = ljsession.split(":")[1];
+		update_account(this_account);
 	}
-	function logout(this_account)
+	function logout_this_cookie(cookie)
 	{
-		console.log("Logout subroutine started...");
-		var challenge = getLJchallenge();
-		var response = md5(challenge + this_account.password);
-		var session_cookie = chrome.cookies.get({"url":"http://livejournal.com","name":"ljsession"}, function(cookie) { console.log("Do things! " + cookie.value); return cookie; });
-		console.log("Found the cookie: " + session_cookie.value);
-		var cookie_fields = session_cookie.split(":");
-		var sessid = cookie_fields[2].substring(1);
-		conn = new XMLHttpRequest()
-		var params = "mode=sessionexpire" +
-					"&user=" + this_account.username +
-					"&auth_method=cookie" +
-//					"&auth_challenge=" + challenge +
-//					"&auth_response=" + response +
-					"&expire_id_" + sessid + "=1";
-		conn.open("POST", "http://www.livejournal.com/interface/flat",false);
-		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		conn.setRequestHeader("X-LJ-Auth","cookie");
-		conn.setRequestHeader("Cookie","ljsession=" + session_cookie);
-		conn.setRequestHeader("Cookie","ljmastersession=" + session_cookie);
-		conn.setRequestHeader("Cookie","ljloggedin=" + cookie_fields[1] + ":" + cookie_fields[2]);
-		console.log("Logging out with cookie: " + session_cookie.value);
-		conn.send(params);
-		console.log("Deleting cookie...");
-		chrome.cookies.remove(session_cookie);
+		if(cookie)
+		{
+			console.log("Logout subroutine started...");
+			var cookie_fields = cookie.value.split(":");
+			var sessid = cookie_fields[2].substring(1);
+			conn = new XMLHttpRequest()
+			var params = "mode=sessionexpire" +
+						"&auth_method=cookie" +
+						"&expire_id_" + sessid + "=1";
+			conn.open("POST", "http://www.livejournal.com/interface/flat",false);
+			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			conn.setRequestHeader("X-LJ-Auth","cookie");
+			console.log("Logging out with cookie: " + cookie.value);
+			conn.send(params);
+			console.log("Deleting cookie...");
+			chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
+			chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
+			chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
+		}
+		else console.log("No cookie found, no need to log out.");
 	}
 	function version_update(old_version)
 	{
@@ -115,7 +107,19 @@
 				new_account_list.push(account);
 			}
 			localStorage["lj_juggler_accounts"] = JSON.stringify(new_account_list);
+
+			// We now use a cookie check to see who a use is logged in as.  So clean up the old data.
+			localStorage.remove("lastSelected");
 		}
+	}
+	function update_account(change_me)
+	{
+		var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+		for(var i = 0; i < account_list.length; i++)
+		{
+			if(account_list[i].username == change_me.username) account_list[i] = change_me;
+		}
+		localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
 	}
 
 	</script>

@@ -34,14 +34,13 @@
 		{
 			account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
 			account_list.sort(accountsort);
-			if(!localStorage["lastSelected"]) localStorage["lastSelected"] = JSON.stringify({"username":"","password":""});
 			for(var i = 0; account_list[i]; i++)
 			{
 				var next_option = generate_option(account_list[i]);
 				document.getElementById("user_list").appendChild(next_option);
 			}
 			document.getElementById("option_list").appendChild(build_logout_div());
-			console.log("test1");
+			chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, highlight_active_account_by_cookie);
 		}
 		function build_logout_div()
 		{
@@ -49,46 +48,45 @@
 			this_div.id = "livejournal_logout";
 			this_div.setAttribute("class","nohover");
 			this_div.innerHTML = "Log out";
-			this_div.onmouseover = function() { this.setAttribute("class","hover"); };
+			this_div.onmouseover = function()
+			{
+				chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
+					{
+						highlight_active_account_by_cookie(cookie);
+						this_div.setAttribute("class","hover");
+					})
+			};
 			this_div.onmouseout = function() { this.setAttribute("class","nohover"); };
 			this_div.onclick = function()
 			{
-				var last_account = JSON.parse(localStorage["lastSelected"]);
-				chrome.extension.sendRequest({"command":"logout","account":last_account});
-				document.getElementById(last_account.username).setAttribute("class","nohover");
-				localStorage["lastSelected"] = "";
+				chrome.extension.sendRequest({"command":"logout"});
 				window.close();
 			};
 			return this_div;
 		}
-		
-		
 		function generate_option(this_account)
 		{
 			var this_div = document.createElement("div");
-			if(this_account.username == JSON.parse(localStorage["lastSelected"]).username) this_div.setAttribute("class","selected");
-			else this_div.setAttribute("class","nohover");
+			this_div.setAttribute("class","nohover");
 			this_div.id = this_account.username;
 			this_div.innerHTML = this_account.username;
 			this_div.onmouseover = function ()
 			{
-				this.setAttribute("class","hover");
+				chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
+					{
+						highlight_active_account_by_cookie(cookie);
+						this_div.setAttribute("class","hover");
+					})
 			};
-			this_div.onmouseout = function ()
-			{
-				if(this_account.username == JSON.parse(localStorage["lastSelected"]).username) this_div.setAttribute("class","selected");
-				else this_div.setAttribute("class","nohover");
-			};
+//			this_div.onmouseout = function ()
+//			{
+//				chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, highlight_active_account_by_cookie);
+//			};
 			this_div.onclick = function (this_account)
 			{ 
 				return function ()
 				{
-					if(localStorage["lastSelected"]) var last_account = JSON.parse(localStorage["lastSelected"]);
-					console.log("Send login request to background...");
 					chrome.extension.sendRequest({"command":"login","account":this_account});
-					if(last_account.username) document.getElementById(last_account.username).setAttribute("class","nohover");
-					document.getElementById(this_account.username).setAttribute("class","selected");
-					console.log("Close popup window...");
 					window.close();
 				};
 			}(this_account);
@@ -99,6 +97,34 @@
 			if(account_one.username == account_two.username) return 0;
 			else if(account_one.username < account_two.username) return -1;
 			else if(account_one.username > account_two.username) return 1;
+		}
+		function highlight_active_account_by_cookie(cookie)
+		{
+			if(cookie)
+			{
+				var username = get_username_from_uid(cookie.value.split(":")[1]);
+				if(username)
+				{
+					var user_list = document.getElementById("user_list").childNodes;
+					for(var i = 0; i < user_list.length; i++)
+					{
+						if(user_list[i].id == username) user_list[i].setAttribute("class","selected");
+						else user_list[i].setAttribute("class","nohover");
+					}
+				}
+			}
+		}
+		function get_username_from_uid(uid)
+		{
+			var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+			for(var i = 0; i < account_list.length; i++)
+			{
+				if(account_list[i].uid == uid)
+				{
+					return account_list[i].username;
+				}
+			}
+			return 0;
 		}
 		</script>
 	</head>
