@@ -153,9 +153,9 @@
 			var version_history_list = [];
 			if(localStorage["version_history_list"]) version_history_list = JSON.parse(localStorage["version_history_list"]);
 			console.log("run updates in order");
-			if(!find_in_array(version_history_list, "2.0"))
+			if(!find_in_array(version_history_list, "2.0.0"))
 			{
-				console.log("2.0 updates in progress");
+				console.log("2.0.0 updates in progress");
 					// Resave passwords as MD5 hashes for a slight security bump.
 				var old_account_list = [];
 				if(localStorage["lj_juggler_accounts"]) old_account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
@@ -174,8 +174,8 @@
 				console.log("removing lastSelected from localStorage");
 				localStorage.removeItem("lastSelected");
 				
-				console.log("push version 2.0 into the version_history_list");
-				version_history_list.push("2.0");
+				console.log("push version 2.0.0 into the version_history_list");
+				version_history_list.push("2.0.0");
 			}
 			console.log("updating version_history_list in localStorage");
 			localStorage["version_history_list"] = JSON.stringify(version_history_list);
