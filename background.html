@@ -59,8 +59,8 @@
 		var session_fields = ljsession.split(":");
 		var now = new Date();
 		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljsession", "value":ljsession, "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
-		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
 		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljmastersession", "value":ljsession, "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
+		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
 		this_account.uid = ljsession.split(":")[1];
 		update_account(this_account);
 	}
@@ -69,17 +69,24 @@
 		if(cookie)
 		{
 			console.log("Logout subroutine started...");
-			var cookie_fields = cookie.value.split(":");
-			var sessid = cookie_fields[2].substring(1);
-			conn = new XMLHttpRequest()
-			var params = "mode=sessionexpire" +
-						"&auth_method=cookie" +
-						"&expire_id_" + sessid + "=1";
-			conn.open("POST", "http://www.livejournal.com/interface/flat",false);
-			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			conn.setRequestHeader("X-LJ-Auth","cookie");
-			console.log("Logging out with cookie: " + cookie.value);
-			conn.send(params);
+			try
+			{
+				var cookie_fields = cookie.value.split(":");
+				var sessid = cookie_fields[2].substring(1);
+				conn = new XMLHttpRequest()
+				var params = "mode=sessionexpire" +
+							"&auth_method=cookie" +
+							"&expire_id_" + sessid + "=1";
+				conn.open("POST", "http://www.livejournal.com/interface/flat",false);
+				conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				conn.setRequestHeader("X-LJ-Auth","cookie");
+				console.log("Logging out with cookie: " + cookie.value);
+				conn.send(params);
+			}
+			catch (e)
+			{
+				console.log("logout failure: " + e);
+			}
 			console.log("Deleting cookie...");
 			chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
 			chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
