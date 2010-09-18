@@ -3,29 +3,47 @@
 		<style type="text/css">
 		body
 		{
-			background-color:#eeeeee;
-			cursor:default;
+			background-color:#fff;
 		}
 		div
 		{
-			padding:2px;
-			margin:2px;
-			width:120px;
+			color: #000;
+			font: normal 16px Georgia, "Times New Roman", Times, serif;
+			margin: 3px;
+			padding: 0px;
+			width: 149px;	
+			text-shadow: 1px 1px 1px #ededed;
+			filter: dropshadow(color=#ededed, offx=1, offy=1);
 		}
-		div.nohover
+		div#user_list .nohover
 		{
-			background-color:#bbbbff;
+			background: url(nohover.png) no-repeat;
 			color:#000000;
+			padding: 4px 4px 8px 40px;
 		}
-		div.hover
+		div#user_list .hover
 		{
-			background-color:#5555ff;
-			color:#ffffff;
+			background: url(hover.png) no-repeat;
+			color:#075a64;
+			cursor: pointer;
+			padding: 4px 4px 8px 40px;
 		}
-		div.selected
+		div#user_list .selected
 		{
-			background-color:#33eeff;
-			color:#ffffff;
+			background: url(selected.png) no-repeat;
+			color:#07511d;
+			padding: 4px 4px 8px 40px;
+		}
+		div#option_list
+		{
+			background: url(option_list.png) no-repeat;
+			margin: 10px 3px 0px 6px;
+			padding: 2px 4px 6px 40px;
+		}
+		div#option_list .hover
+		{
+			color: #b30000;
+			cursor: pointer;
 		}
 		</style>
 		<script type="text/javascript" src="md5.js"></script>
