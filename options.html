@@ -1,5 +1,72 @@
 <html>
 	<head>
+		<style type="text/css">
+		body {
+			background-color: #999;
+			font: normal 16px Georgia, "Times New Roman", Times, serif;
+			margin: 0;	
+		}
+		#wrapper {
+			background-color: #fff;
+			margin: 2em auto;
+			padding: 5px 25px 25px 25px;
+			width: 267px;
+			-webkit-border-radius: 10px;
+			-moz-border-radius: 10px;
+			border-radius: 10px;
+			-webkit-box-shadow: 1px 1px 4px #000;
+			-moz-box-shadow: 1px 1px 4px #000;
+			box-shadow: 1px 1px 4px #000;
+		}
+		ul li {
+			background: url(user.png) no-repeat 0 50%;
+			list-style-type: none;
+			padding: 4px 0px 4px 20px;
+		}
+		label {
+			display: block;
+			float: left;
+			padding: 4px;
+			width: 100px;
+		}
+		button {
+			background: url(deleteaccount.png) no-repeat;
+			border: none;
+			cursor: pointer;
+			font: normal 16px Georgia, "Times New Roman", Times, serif;
+			height: 20px;
+			margin-left: 10px;
+			width: 21px;
+		}
+		.submit {
+			background: url(addaccount.png) no-repeat;
+			border: none;
+			cursor: pointer;
+			float: right;
+			height: 29px;
+			margin: 15px 0 0 0;
+			width: 139px;
+		}
+		h1 {
+			font-variant: small-caps;
+			font-weight: normal;
+			text-align: center;
+		}
+		h2, h3 {
+			color: #b30000;
+			font-style: italic;
+			font-weight: normal;
+		}
+		p.desc {
+			clear: both;
+			color: #666;
+			font: normal 11px Arial, Helvetica, sans-serif;
+			padding-top: 25px;
+			text-align: center;
+		}
+		a { color: #b30000; text-decoration: none; }
+		a:hover { color: #075a64; text-decoration: underline; }
+		</style>
 		<title>Account Juggler - Options</title>
 		<script type="text/javascript" src="md5.js"></script>
 		<script type="text/javascript">
