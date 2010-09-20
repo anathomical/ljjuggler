@@ -1,6 +1,8 @@
 <html>
 	<head>
-		<style type="text/css">
+		<title>Account Juggler - Options</title>
+        
+        <style type="text/css">
 		body {
 			background-color: #999;
 			font: normal 16px Georgia, "Times New Roman", Times, serif;
@@ -67,7 +69,7 @@
 		a { color: #b30000; text-decoration: none; }
 		a:hover { color: #075a64; text-decoration: underline; }
 		</style>
-		<title>Account Juggler - Options</title>
+        
 		<script type="text/javascript" src="md5.js"></script>
 		<script type="text/javascript">
 function drawlist()
@@ -85,7 +87,7 @@ function drawlist()
 		var delete_button = document.createElement("button");
 		delete_button.id = account.username;
 		delete_button.onclick = delete_clicker(account);
-		delete_button.innerHTML = "delete";
+		delete_button.innerHTML = "";
 		next_account.innerHTML = account.username;
 		next_account.appendChild(delete_button);
 		document.getElementById("account-list").appendChild(next_account);
@@ -136,15 +138,22 @@ function accountsort(account_one, account_two)
 }
 		</script>
 	</head>
-	<body onload="drawlist();">
+	<body onLoad="drawlist();">
+    
+    <div id="wrapper">
+    
+    	<h1>LJ Juggler</h1>
 		<h3>Accounts:</h3>
 		<ul id="account-list">
 		</ul>
-		<h3>Add new account:</h3>
-		<form onsubmit="return save_new_account();">
-			Username: <input type="text" id="username"/><br/>
-			Password: <input type="password" id="password"/><br/>
-			<input type="submit" value="Add">
+		<h3>Add an account:</h3>
+		<form onSubmit="return save_new_account();">
+			<label>Username:</label> <input type="text" id="username"/><br/>
+			<label>Password:</label> <input type="password" id="password"/><br/>
+			<input type="submit" value="" class="submit">
 		</form>
+        <p class="desc">LJ Account Juggler: <a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Change Log</a></p>
+        
+     </div>
 	</body>
 </html>

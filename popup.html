@@ -148,11 +148,15 @@
 			var old_version = "0";
 			if(localStorage["ljjuggler_version"]) old_version = localStorage["ljjuggler_version"];
 			console.log("checking version - current: " + current_version + " - stored: " + old_version);
-			if(!localStorage["version_history_list"] || !find_in_array(JSON.parse(localStorage["version_history_list"]), old_version))
+			if(old_version != current_version)
 			{
-				version_update(old_version, current_version);
+				if(!localStorage["version_history_list"] || !find_in_array(JSON.parse(localStorage["version_history_list"]), old_version))
+				{
+					version_update(old_version, current_version);
+				}
 			}
 			else console.log("up to date");
+			localStorage["ljjuggler_version"] = current_version;
 		}
 		function getVersion()
 		{
@@ -167,7 +171,6 @@
 			console.log("alert user to update");
 			alert("LJ Juggler has been updated to the latest version: " + current_version + "\n\nCheck out the change log at: http://rushin-doll.net/lj-juggler/change-log.html");
 			console.log("update stored version");
-			localStorage["ljjuggler_version"] = current_version;
 			var version_history_list = [];
 			if(localStorage["version_history_list"]) version_history_list = JSON.parse(localStorage["version_history_list"]);
 			console.log("run updates in order");
@@ -208,8 +211,8 @@
 		}
 			</script>
 	</head>
-	<body onload="page_loaded();">
+	<body onLoad="page_loaded();">
 		<div id="user_list" name="user_list"></div>
-		<div id="option_list" name="option_list"></div>
+        <div id="option_list" name="option_list"></div>
 	</body>
 </html>
