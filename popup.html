@@ -9,11 +9,18 @@
 		{
 			color: #000;
 			font: normal 16px Georgia, "Times New Roman", Times, serif;
-			margin: 3px;
+			margin: 3px 0px;
 			padding: 0px;
-			width: 149px;	
-//			text-shadow: 1px 1px 1px #ededed;
-//			filter: dropshadow(color=#ededed, offx=1, offy=1);
+			width: 193px;	
+			text-shadow: 1px 1px 0px #E1E1E1;
+		}
+		div#title
+		{
+			cursor: default;
+			font-size: 18px;
+			font-variant: small-caps;
+			text-align: center;
+			text-shadow: none;
 		}
 		div#user_list .nohover
 		{
@@ -28,23 +35,44 @@
 			cursor: pointer;
 			padding: 4px 4px 8px 40px;
 		}
-		div#user_list .selected
+		div#user_list .select-hover
 		{
 			background: url(selected.png) no-repeat;
 			color:#07511d;
 			padding: 4px 4px 8px 40px;
 		}
-		div#option_list
+		div#user_list .select-nohover
+		{
+			background: url(selected.png) no-repeat;
+			color: #07511d;
+			padding: 4px 4px 8px 40px;
+		}
+		div#option_list .nohover
 		{
 			background: url(option_list.png) no-repeat;
-			margin: 10px 3px 0px 6px;
-			padding: 2px 4px 6px 40px;
+			margin: 10px 3px 6px 0px;
+			padding: 4px 4px 8px 40px;
 		}
 		div#option_list .hover
 		{
+			background: url(option_list_hover.png) no-repeat;
 			color: #b30000;
 			cursor: pointer;
+			margin: 10px 3px 6px 0px;
+			padding: 4px 4px 8px 40px;
 		}
+		div.options
+		{
+			color: #666;
+			cursor: pointer;
+			font: normal 12px Arial, Helvetica, sans-serif;
+			padding: 6px 0;
+			text-align: center;
+			text-shadow: none;
+		}
+		div.options a { color: #b30000; text-decoration: none; }
+		div.options a:hover { color: #075a64; text-decoration: underline; }
+		
 		</style>
 		<script type="text/javascript" src="md5.js"></script>
 		<script type="text/javascript">
@@ -58,52 +86,53 @@
 				var next_option = generate_option(account_list[i]);
 				document.getElementById("user_list").appendChild(next_option);
 			}
-			document.getElementById("option_list").appendChild(build_logout_div());
 			chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, highlight_active_account_by_cookie);
 			console.log("popup.html fully loaded");
 		}
-		function build_logout_div()
+		function click_logout_div()
 		{
-			var this_div = document.createElement("div");
-			this_div.id = "livejournal_logout";
-			this_div.setAttribute("class","nohover");
-			this_div.innerHTML = "Log out";
-			this_div.onmouseover = function()
-			{
-				chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
-					{
-						highlight_active_account_by_cookie(cookie);
-						this_div.setAttribute("class","hover");
-					})
-			};
-			this_div.onmouseout = function() { this.setAttribute("class","nohover"); };
-			this_div.onclick = function()
-			{
-				chrome.extension.sendRequest({"command":"logout"});
-				window.close();
-			};
-			return this_div;
+			chrome.extension.sendRequest({"command":"logout"});
+			window.close();
 		}
+		function mouseover_this_div(this_div_id)
+		{
+			chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
+			{
+				highlight_active_account_by_cookie(cookie, this_div_id);
+			})
+		}
+		function mouseout_this_div()
+		{
+			chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
+			{
+				highlight_active_account_by_cookie(cookie, 0);
+			})
+		}
+		function click_this_user_div(this_account)
+		{
+			chrome.extension.sendRequest({"command":"login","account":this_account});
+			window.close();
+		}
+			
 		function generate_option(this_account)
 		{
 			var this_div = document.createElement("div");
 			this_div.setAttribute("class","nohover");
 			this_div.id = this_account.username;
 			this_div.innerHTML = this_account.username;
-			this_div.onmouseover = function ()
+			this_div.onmouseover = function (this_div)
 			{
-				chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
-					{
-						highlight_active_account_by_cookie(cookie);
-						this_div.setAttribute("class","hover");
-					})
-			};
+				return function ()
+				{
+					mouseover_this_div(this_div.id);
+				};
+			}(this_div);
+			this_div.onmouseout = mouseout_this_div;
 			this_div.onclick = function (this_account)
 			{ 
 				return function ()
 				{
-					chrome.extension.sendRequest({"command":"login","account":this_account});
-					window.close();
+					click_this_user_div(this_account);
 				};
 			}(this_account);
 			return this_div;
@@ -114,21 +143,32 @@
 			else if(account_one.username < account_two.username) return -1;
 			else if(account_one.username > account_two.username) return 1;
 		}
-		function highlight_active_account_by_cookie(cookie)
+		function highlight_active_account_by_cookie(cookie, hover_id)
 		{
-			if(cookie)
+			var logged_username = "";
+			if(cookie) logged_username = get_username_from_uid(cookie.value.split(":")[1]);
+			console.log("highlighting " + hover_id + " : " + logged_username);
+			var user_list = document.getElementById("user_list").childNodes;
+			for(var i = 0; i < user_list.length; i++)
 			{
-				var username = get_username_from_uid(cookie.value.split(":")[1]);
-				if(username)
+				if(user_list[i].id == logged_username)
 				{
-					var user_list = document.getElementById("user_list").childNodes;
-					for(var i = 0; i < user_list.length; i++)
-					{
-						if(user_list[i].id == username) user_list[i].setAttribute("class","selected");
-						else user_list[i].setAttribute("class","nohover");
-					}
+					if(hover_id == user_list[i].id) user_list[i].setAttribute("class","select-hover");
+					else user_list[i].setAttribute("class","select-nohover");
+				}
+				else if(hover_id == user_list[i].id) user_list[i].setAttribute("class","hover");
+				else user_list[i].setAttribute("class","nohover"); 
+			}
+			var option_list = document.getElementById("option_list").childNodes;
+			for(var i = 0; i < option_list.length; i++)
+			{
+				if(option_list[i].nodeName == "DIV")
+				{
+					if(hover_id == option_list[i].id) option_list[i].setAttribute("class","hover");
+					else option_list[i].setAttribute("class","nohover");
 				}
 			}
+
 		}
 		function get_username_from_uid(uid)
 		{
@@ -171,6 +211,7 @@
 			console.log("alert user to update");
 			alert("LJ Juggler has been updated to the latest version: " + current_version + "\n\nCheck out the change log at: http://rushin-doll.net/lj-juggler/change-log.html");
 			console.log("update stored version");
+			localStorage["ljjuggler_version"] = current_version;
 			var version_history_list = [];
 			if(localStorage["version_history_list"]) version_history_list = JSON.parse(localStorage["version_history_list"]);
 			console.log("run updates in order");
@@ -209,10 +250,20 @@
 			}
 			return false
 		}
+		
 			</script>
+            
+            
 	</head>
 	<body onLoad="page_loaded();">
+    	<div id="title">LJ Juggler</div>
 		<div id="user_list" name="user_list"></div>
-        <div id="option_list" name="option_list"></div>
+        <div id="option_list" name="option_list">
+			<div id="livejournal_logout" class="nohover" onclick="click_logout_div();" onmouseover="mouseover_this_div('livejournal_logout');" onmouseout="mouseout_this_div();">Log out</div>
+		</div>
+		<div id="links" name="links">
+			<div class="options"><a href="#" onclick="chrome.tabs.create({'url': chrome.extension.getURL('options.html')});">Add or Remove Accounts</a></div>
+			<div class="options"><a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/'});">About</a> | <a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/change-log.html'});">Changelog</a></div>
+		</div>
 	</body>
 </html>
