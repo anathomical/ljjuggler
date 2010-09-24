@@ -8,6 +8,18 @@
 		<p><a href="http://rushin-doll.net/lj-juggler/">http://rushin-doll.net/lj-juggler/</a></p>
 		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.
 
+		<h3>Version 2.1.0</h3>
+			<p>User-facing</p>
+			<ul>
+				<li>Minor tweak to differentiate between a selected account that is currently highlighted because the user is hovering the mouse over it, and one that is not highlighted but still selected.</li>
+			</ul>
+			<p>Behind-the-scenes</p>
+			<ul>
+				<li>Generated a localStorage passing handler so that background.html can handle all localStorage requests from any page in the extension.</li>
+				<li>Used an update check to move all the localStorage data to background.html's store so that it's in one place.</li>
+				<li>Tweaked popup.html and options.html so that they use the localStorage set up in background.html.</li>
+			</ul>
+		
 		<h3>Version 2.0.4</h3>
 			<p>User-facing</p>
 			<ul>

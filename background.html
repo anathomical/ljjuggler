@@ -7,7 +7,6 @@
 		chrome.extension.onRequest.addListener(
 			function(request, sender, sendResponse)
 			{
-				console.log("setting interval for animation");
 				if(request.command == "logout")
 				{
 					console.log("Logging out...");
@@ -26,6 +25,24 @@
 							loginas(request.account);
 							sendResponse({});
 						})
+				}
+				else if(request.command == "localStorage")
+				{
+					console.log("localStorage access request received in mode: " + request.mode + " for key: " + request.key);
+					if(request.mode == "set")
+					{
+						localStorage[request.key] = request.value;
+						sendResponse({"code":"ok"});
+					}
+					else if(request.mode == "removeItem")
+					{
+						localStorage.removeItem(request.key);
+						sendResponse({"code":"ok"});
+					}
+					else if(request.mode == "get")
+					{
+						sendResponse({"code":"ok","value":localStorage[request.key]});
+					}
 				}
 			});
 	}
@@ -96,6 +113,7 @@
 	}
 	function update_account(change_me)
 	{
+		console.log("Updating account: " + change_me.username);
 		var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
 		for(var i = 0; i < account_list.length; i++)
 		{

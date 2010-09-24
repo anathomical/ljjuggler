@@ -74,25 +74,27 @@
 		<script type="text/javascript">
 function drawlist()
 {
-	var account_list;
-	if(localStorage["lj_juggler_accounts"]) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-	else account_list = new Array;
-	account_list.sort(accountsort);
-	document.getElementById("account-list").innerHTML = "";
-	
-	for(var i = 0; i < account_list.length; i++)
+	chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 	{
-		var account = account_list[i];
-		var next_account = document.createElement("li");
-		var delete_button = document.createElement("button");
-		delete_button.id = account.username;
-		delete_button.onclick = delete_clicker(account);
-		delete_button.innerHTML = "";
-		next_account.innerHTML = account.username;
-		next_account.appendChild(delete_button);
-		document.getElementById("account-list").appendChild(next_account);
-	}
-	document.getElementById("username").focus();
+		var account_list = new Array;
+		if(response.value) account_list = JSON.parse(response.value);
+		account_list.sort(accountsort);
+		document.getElementById("account-list").innerHTML = "";
+		
+		for(var i = 0; i < account_list.length; i++)
+		{
+			var account = account_list[i];
+			var next_account = document.createElement("li");
+			var delete_button = document.createElement("button");
+			delete_button.id = account.username;
+			delete_button.onclick = delete_clicker(account);
+			delete_button.innerHTML = "";
+			next_account.innerHTML = account.username;
+			next_account.appendChild(delete_button);
+			document.getElementById("account-list").appendChild(next_account);
+		}
+		document.getElementById("username").focus();
+	});
 }
 function delete_clicker (account)
 {
@@ -100,17 +102,20 @@ function delete_clicker (account)
 }
 function delete_account(username)
 {
-	account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-	for (var i = 0; account_list[i]; i++)
+	chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 	{
-		if (account_list[i].username == username)
+		var account_list = JSON.parse(response.value);
+		for (var i = 0; account_list[i]; i++)
 		{
-			account_list.splice(i, 1);
-			localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
-			break;
+			if (account_list[i].username == username)
+			{
+				account_list.splice(i, 1);
+				chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)});
+				break;
+			}
 		}
-	}
-	drawlist();
+		drawlist();
+	});
 }
 function save_new_account()
 {
@@ -118,13 +123,15 @@ function save_new_account()
 	password = md5(document.getElementById("password").value);
 	if(username && password)
 	{
-		var account_list;
-		if(localStorage["lj_juggler_accounts"]) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-		else account_list = [];
-		account_to_add = {"username":username,"password":password};
-		account_list.push(account_to_add);
-		localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
-		drawlist();
+		chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+		{
+			var account_list = [];
+			if(response.value) account_list = JSON.parse(response.value);
+			account_to_add = {"username":username,"password":password};
+			account_list.push(account_to_add);
+			chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)});
+			drawlist();
+		});
 	}
 	document.getElementById("username").value = "";
 	document.getElementById("password").value = "";
