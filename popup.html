@@ -19,6 +19,7 @@
 			cursor: default;
 			font-size: 18px;
 			font-variant: small-caps;
+			padding-bottom: 6px;
 			text-align: center;
 			text-shadow: none;
 		}
@@ -37,21 +38,22 @@
 		}
 		div#user_list .select-hover
 		{
-			background: url(selected.png) no-repeat;
+			background: url(selected-hover.png) no-repeat;
 			color:#07511d;
-			cursor: pointer;
+			cursor: default;
 			padding: 4px 4px 8px 40px;
 		}
 		div#user_list .select-nohover
 		{
 			background: url(selected.png) no-repeat;
 			color: #017a25;
+			cursor: default;
 			padding: 4px 4px 8px 40px;
 		}
 		div#option_list .nohover
 		{
 			background: url(option_list.png) no-repeat;
-			margin: 10px 3px 6px 0px;
+			margin: 10px 3px 10px 0px;
 			padding: 4px 4px 8px 40px;
 		}
 		div#option_list .hover
@@ -59,7 +61,7 @@
 			background: url(option_list_hover.png) no-repeat;
 			color: #b30000;
 			cursor: pointer;
-			margin: 10px 3px 6px 0px;
+			margin: 10px 3px 10px 0px;
 			padding: 4px 4px 8px 40px;
 		}
 		div.options
@@ -67,13 +69,14 @@
 			color: #666;
 			cursor: pointer;
 			font: normal 12px Arial, Helvetica, sans-serif;
-			padding: 6px 0;
+			padding-top: 2px;
 			text-align: center;
 			text-shadow: none;
 		}
+		div.small { border-top: 1px solid #DCDCDC; color: #DCDCDC; font-size: 11px; margin-top: 10px; }
 		div.options a { color: #b30000; text-decoration: none; }
 		div.options a:hover { color: #075a64; text-decoration: underline; }
-		
+
 		</style>
 		<script type="text/javascript" src="md5.js"></script>
 		<script type="text/javascript">
@@ -293,9 +296,7 @@
         <div id="option_list" name="option_list">
 			<div id="livejournal_logout" class="nohover" onclick="click_logout_div();" onmouseover="mouseover_this_div('livejournal_logout');" onmouseout="mouseout_this_div();">Log out</div>
 		</div>
-		<div id="links" name="links">
-			<div class="options"><a href="#" onclick="chrome.tabs.create({'url': chrome.extension.getURL('options.html')});">Add or Remove Accounts</a></div>
-			<div class="options"><a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/'});">About</a> | <a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/change-log.html'});">Changelog</a></div>
-		</div>
+		<div class="options"><a href="#" onclick="chrome.tabs.create({'url': chrome.extension.getURL('options.html')});">Add or Remove Accounts</a></div>
+		<div class="options small"><a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/'});">About</a> | <a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/change-log.html'});">Changelog</a> | <a href="#" onclick="chrome.tabs.create({'url': 'http://metanomaly.livejournal.com'});">Interface</a></div>
 	</body>
 </html>

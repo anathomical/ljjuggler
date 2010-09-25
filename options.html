@@ -129,8 +129,7 @@ function save_new_account()
 			if(response.value) account_list = JSON.parse(response.value);
 			account_to_add = {"username":username,"password":password};
 			account_list.push(account_to_add);
-			chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)});
-			drawlist();
+			chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
 		});
 	}
 	document.getElementById("username").value = "";
@@ -159,7 +158,7 @@ function accountsort(account_one, account_two)
 			<label>Password:</label> <input type="password" id="password"/><br/>
 			<input type="submit" value="" class="submit">
 		</form>
-        <p class="desc">LJ Account Juggler: <a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Change Log</a></p>
+        <p class="desc">LJ Account Juggler: <a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Changelog</a> | <a href="http://metanomaly.livejournal.com">Interface</a></p>
         
      </div>
 	</body>

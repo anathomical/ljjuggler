@@ -45,6 +45,19 @@
 					}
 				}
 			});
+			chrome.cookies.onChanged.addListener(function (changeInfo)
+			{
+				if(!changeInfo.removed && changeInfo.cookie.name == "BMLschemepref" && changeInfo.cookie.session)
+				{
+					console.log("Detected BMLschemepref.  Converting from session-length to 365-day length cookie.");
+					var now = new Date();
+					delete changeInfo.cookie.hostOnly;
+					delete changeInfo.cookie.session;
+					changeInfo.cookie.expirationDate = now.valueOf() + (1000*60*60*24*365);
+					changeInfo.cookie.url = "http" + (changeInfo.cookie.secure ? "s" : "") + "://" + changeInfo.cookie.domain.substring(1) + changeInfo.cookie.path;
+					chrome.cookies.set(changeInfo.cookie);
+				}			
+			});
 	}
 	function getLJchallenge()
 	{
