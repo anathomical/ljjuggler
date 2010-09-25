@@ -53,7 +53,7 @@
 					var now = new Date();
 					delete changeInfo.cookie.hostOnly;
 					delete changeInfo.cookie.session;
-					changeInfo.cookie.expirationDate = now.valueOf() + (1000*60*60*24*365);
+					changeInfo.cookie.expirationDate = (+new Date() / 1000) + (60*60*24*365);
 					changeInfo.cookie.url = "http" + (changeInfo.cookie.secure ? "s" : "") + "://" + changeInfo.cookie.domain.substring(1) + changeInfo.cookie.path;
 					chrome.cookies.set(changeInfo.cookie);
 				}			
@@ -87,10 +87,10 @@
 		console.log("Login negotiations completed.  Saving session data.");
 		var ljsession = conn.responseText.split("\n")[1];
 		var session_fields = ljsession.split(":");
-		var now = new Date();
-		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljsession", "value":ljsession, "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
-		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljmastersession", "value":ljsession, "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
-		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now.valueOf() + (1000*60*60*24*365))});
+		var now = +new Date() / 1000;
+		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljsession", "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljmastersession", "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now + 60*60*24*365)});
 		this_account.uid = ljsession.split(":")[1];
 		update_account(this_account);
 	}
