@@ -98,7 +98,10 @@ function drawlist()
 }
 function delete_clicker (account)
 {
-	return function () { delete_account(account.username) };
+	return function ()
+	{
+		if(confirm("Are you sure you want to delete the account " + account.username + " from LJ Juggler?")) delete_account(account.username);
+	};
 }
 function delete_account(username)
 {
@@ -123,13 +126,20 @@ function save_new_account()
 	password = md5(document.getElementById("password").value);
 	if(username && password)
 	{
-		chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+		chrome.extension.sendRequest({"command":"login","account":{"username":username,"password":password}}, function (response)
 		{
-			var account_list = [];
-			if(response.value) account_list = JSON.parse(response.value);
-			account_to_add = {"username":username,"password":password};
-			account_list.push(account_to_add);
-			chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
+			if(response.code == "ok")
+			{
+				chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+				{
+					var account_list = [];
+					if(response.value) account_list = JSON.parse(response.value);
+					account_to_add = {"username":username,"password":password};
+					account_list.push(account_to_add);
+					chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
+				});
+			}
+			else alert("There was an error confirming the account " + username + ".  The error message received was: " + response.message);
 		});
 	}
 	document.getElementById("username").value = "";
