@@ -8,6 +8,20 @@
 		<p><a href="http://rushin-doll.net/lj-juggler/">http://rushin-doll.net/lj-juggler/</a></p>
 		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.
 
+		<h3>Version 2.2.0</h3>
+			<p>User-facing</p>
+			<ul>
+				<li>When removing an account on the options page, LJ Juggler now asks you to click a confirmation button before deleting it, just in case you accidentally hit the X.</li>
+				<li>When adding a new account on the options page, LJ Juggler confirms that the username and password you provide can actually be used to log in.  This helps save you from typos and solves error-checking problems later on.</li>
+				<li>When you add a new account on the options page, LJ Juggler AUTOMATICALL LOGS YOU INTO THAT ACCOUNT.  We're not sure this is a feature, it might well be a bug (let us know!), but it was the easiest way to handle the validation of accounts.</li>
+			</ul>
+			<p>Behind-the-scenes</p>
+			<ul>
+				<li>Added a response-code parsing function for login attempts.  LJ Juggler can now do more than just fail to log in if something goes wrong, it can try to tell developers why (in the console).</li>
+				<li>Moved version check and update code into background.html.  This actually saves a LOT of CPU cycles since previously there was a fairly involved asynchronous version check every time you opened the Juggler window.</li>
+				<li>Some general code clean up that hopefully paves the way for adding support for LJ clone sites.</li>
+			</ul>
+		
 		<h3>Version 2.1.2</h3>
 			<p>User-facing</p>
 			<ul>
