@@ -82,7 +82,6 @@
 		<script type="text/javascript">
 		function page_loaded()
 		{
-			update_check();
 			chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 			{
 				var account_list = [];
@@ -194,96 +193,6 @@
 				}
 			}
 			return false;
-		}
-		function update_check()
-		{
-			chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_version"}, function (response)
-			{
-				var current_version = getVersion();
-				var old_version = response.value;
-				//if(response.value) old_version = response.value;
-				console.log("checking version - current: " + current_version + " - stored: " + old_version);
-				if(old_version != current_version)
-				{
-					console.log("Versions don't match, executing updates...");
-					version_update(old_version, current_version);
-				}
-				else console.log("Data structures up to date");
-			});
-		}
-		function getVersion()
-		{
-			var xhr = new XMLHttpRequest();
-			xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
-			xhr.send(null);
-			var manifest = JSON.parse(xhr.responseText);
-			return manifest.version;
-		}
-		function version_update(old_version, current_version)
-		{
-			alert("LJ Juggler has been updated to the latest version: " + current_version);
-			chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_version","value":current_version});
-			chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"version_history_list"}, function (response)
-			{
-				var version_history_list = [];
-				if(localStorage["version_history_list"] != undefined) version_history_list = JSON.parse(localStorage["version_history_list"]);
-				else if(response.value != undefined) version_history_list = JSON.parse(response.value);
-				console.log("run updates in order");
-				if(!find_in_array(version_history_list, "2.0.0"))
-				{
-					console.log("2.0.0 updates in progress");
-						// Resave passwords as MD5 hashes for a slight security bump.
-					var old_account_list = [];
-					if(localStorage["lj_juggler_accounts"] != undefined) old_account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-					console.log("update passwords to hashed versions");
-					for(var i = 0; i < old_account_list.length; i++)
-					{
-						var account = old_account_list[i];
-						var old_password = account.passsword;
-						account.password = md5(account.password);
-						console.log("replacing " + old_password + " with " + account.password);
-					}
-					console.log("push changes to localStorage");
-					localStorage["lj_juggler_accounts"] = JSON.stringify(old_account_list);
-
-					// We now use a cookie check to see who a use is logged in as.  So clean up the old data.
-					console.log("removing lastSelected from localStorage");
-					localStorage.removeItem("lastSelected");
-					
-					console.log("push version 2.0.0 into the version_history_list");
-					version_history_list.push("2.0.0");
-				}
-				if(!find_in_array(version_history_list, "2.1.0"))
-				{
-					console.log("2.1.0 updates in progress");
-					
-					// We're going to move all of the localStorage calls to background.html, so we need to move our data over.
-					chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":localStorage["lj_juggler_accounts"]}, function (response) { console.log("Copied lj_juggler_accounts as: " + response.value); });
-					chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_version","value":current_version}, function (response) { console.log("Copied lj_juggler_version as: " + response.value); });
-					console.log("Removing local copy of lj_juggler_accounts.");
-					localStorage.removeItem("lj_juggler_accounts");
-					console.log("Removing local copy of ljjuggler_version.");
-					localStorage.removeItem("ljjuggler_version");
-
-					console.log("push version 2.1.0 into the version_history_list");
-					version_history_list.push("2.1.0");
-					console.log("Removing local copy of version_history_list");
-					localStorage.removeItem("version_history_list");
-				}
-				console.log("updating version_history_list in localStorage: " + version_history_list);
-				chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"version_history_list","value":JSON.stringify(version_history_list)}, function (response) { console.log("Copied version_history_list as: " + response.value); });
-			});
-		}
-		function find_in_array(array, value)
-		{
-			if(array)
-			{
-				for(var i = 0; i < array.length; i++)
-				{
-					if(value == array[i]) return true;
-				}
-			}
-			return false
 		}
 		
 			</script>
