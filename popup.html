@@ -92,7 +92,7 @@
 					var next_option = generate_option(account_list[i]);
 					document.getElementById("user_list").appendChild(next_option);
 				}
-				draw_ui_highlights(0);
+				draw_ui_highlights("initialize", 0);
 				console.log("popup.html fully loaded");
 			});
 		}
@@ -103,11 +103,11 @@
 		}
 		function mouseover_this_div(this_div_id)
 		{
-			draw_ui_highlights(this_div_id);
+			draw_ui_highlights("mouseover", this_div_id);
 		}
-		function mouseout_this_div()
+		function mouseout_this_div(this_div_id)
 		{
-			draw_ui_highlights(0);
+			draw_ui_highlights("mouseout", this_div_id);
 		}
 		function click_this_user_div(this_account)
 		{
@@ -128,7 +128,13 @@
 					mouseover_this_div(this_div.id);
 				};
 			}(this_div);
-			this_div.onmouseout = mouseout_this_div;
+			this_div.onmouseout = function (this_div)
+			{
+				return function()
+				{
+					mouseout_this_div(this_div.id);
+				};
+			}(this_div);
 			this_div.onclick = function (this_account)
 			{ 
 				return function ()
@@ -147,37 +153,72 @@
 		function highlight_account(account, hover_id)
 		{
 			chrome.cookies.get({"url":account.site_info.cookieurl,"name":account.site_info.cookiename}, function (cookie) {
-				console.log(account.username + hover_id + cookie.domain);
 				var target_element = document.getElementById(account.site_info.name + account.username);
-				console.log(target_element.id == hover_id);
 				if(cookie != undefined)
 				{
 					var saved_uid = cookie.value.split(":")[1];
 					if(saved_uid == account.uid)
 					{
-						if(hover_id == target_element.id) target_element.setAttribute("class","select-hover");
-						else target_element.setAttribute("class","select-nohover");
+						if(hover_id == target_element.id)
+						{
+							console.log("Set " + target_element.id + " class to select-hover");
+							target_element.setAttribute("class","select-hover");
+						}
+						else
+						{
+							console.log("Set " + target_element.id + " class to select-nohover");
+							target_element.setAttribute("class","select-nohover");
+						}
 					}
 					else
 					{
-						if(hover_id == target_element.id) target_element.setAttribute("class","hover");
-						else target_element.setAttribute("class","nohover");
+						if(hover_id == target_element.id)
+						{
+							console.log("Set " + target_element.id + " class to hover");
+							target_element.setAttribute("class","hover");
+						}
+						else
+						{
+							console.log("Set " + target_element.id + " class to nohover");
+							target_element.setAttribute("class","nohover");
+						}
 					}
 				}
-				else if(hover_id == target_element.id) target_element.setAttribute("class","hover");
-				else target_element.setAttribute("class","nohover");
+				else if(hover_id == target_element.id)
+				{
+					console.log("Set " + target_element.id + " class to hover");
+					target_element.setAttribute("class","hover");
+				}
+				else
+				{
+					console.log("Set " + target_element.id + " class to nohover");
+					target_element.setAttribute("class","nohover");
+				}
 			});
 		}
-		function draw_ui_highlights(hover_id)
+		function draw_ui_highlights(mode, hover_id)
 		{
 			chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 			{
 				var account_list = [];
 				if(response.value != undefined) account_list = JSON.parse(response.value);
-				for(var i = 0; i < account_list.length; i++)
+				if(mode == "initialize")
 				{
-					var account = account_list[i];
-					highlight_account(account, hover_id);
+					for(var i = 0; i < account_list.length; i++)
+					{
+						highlight_account(account_list[i], hover_id);
+					}
+				}
+				else
+				{
+					for(var i = 0; i < account_list.length; i++)
+					{
+						if(account_list[i].site_info.name + account_list[i].username == hover_id)
+						{
+							if(mode == "mouseover") highlight_account(account_list[i], hover_id);
+							else if(mode == "mouseout") highlight_account(account_list[i], 0);
+						}
+					}
 				}
 				var option_list = document.getElementById("option_list").childNodes;
 				for(var i = 0; i < option_list.length; i++)
