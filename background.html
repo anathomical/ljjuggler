@@ -1,5 +1,6 @@
 <html>
 	<script type="text/javascript" src="md5.js"></script>
+	<script type="text/javascript" src="lj_site_definitions.js"></script>
 	<script type="text/javascript">
 	
 	function page_loaded()
@@ -11,21 +12,20 @@
 				if(request.command == "logout")
 				{
 					console.log("Logging out...");
-					chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
+					for(var i = 0; i < LJlogin_sites.length; i++)
+					{
+					chrome.cookies.get({"url":LJlogin_sites[i].cookieurl,"name":LJlogin_sites[i].cookiename}, function(cookie)
 						{
 							logout_this_cookie(cookie);
-							sendResponse({});
-						})
+						});
+					}
+					sendResponse({});
 				}
 				else if(request.command == "login")
 				{
 					console.log("Logging in as... " + request.account.username);
-					chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
-						{
-							logout_this_cookie(cookie);
-							var response_to_send = parse_lj_response(loginas(request.account));
-							sendResponse(response_to_send);
-						})
+					var response_to_send = parse_lj_response(loginas(request.account));
+					sendResponse(response_to_send);
 				}
 				else if(request.command == "localStorage")
 				{
@@ -60,44 +60,51 @@
 				}			
 			});
 	}
-	function getLJchallenge()
+	function getLJchallenge(interface_url)
 	{
+		console.log("Getting challenge from interface: " + interface_url);
 		var conn = new XMLHttpRequest();
 		var params = "mode=getchallenge";
-		conn.open("POST","http://www.livejournal.com/interface/flat",false);
+		conn.open("POST",interface_url,false);
 		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		conn.send(params);
-		challenge = conn.responseText.split("\n")[3];
+		var challenge = conn.responseText.split("\n")[3];
 		return challenge;
 	}
 	function loginas(this_account)
 	{
-		console.log("Beginning the login dance...");
-		conn = new XMLHttpRequest();
-		var challenge = getLJchallenge();
-		var response = md5(challenge + this_account.password);
-		var params = "mode=sessiongenerate" +
-					"&user=" + this_account.username +
-					"&auth_method=challenge" +
-					"&auth_challenge=" + challenge +
-					"&auth_response=" + response;
-		conn.open("POST", "http://www.livejournal.com/interface/flat",false);
-		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		conn.send(params);
-		console.log(conn.responseText);
-		console.log("Login negotiations completed.  Saving session data.");
-		var ljsession = conn.responseText.split("\n")[1];
-		var session_fields = ljsession.split(":");
-		var now = +new Date() / 1000;
-		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljsession", "value":ljsession, "expirationDate":(now + 60*60*24*365)});
-		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljmastersession", "value":ljsession, "expirationDate":(now + 60*60*24*365)});
-		chrome.cookies.set({"url":"http://livejournal.com/", "domain":"livejournal.com", "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now + 60*60*24*365)});
-		this_account.uid = ljsession.split(":")[1];
-		update_account(this_account);
+		console.log("Checking to see if logging-out needs to happen...");
+		var conn = new XMLHttpRequest();
+		chrome.cookies.get({"url":this_account.site_info.cookieurl,"name":this_account.site_info.cookiename}, function(cookie) {
+			logout_this_cookie(cookie);
+			console.log("Beginning the login dance...");
+			var challenge = getLJchallenge(this_account.site_info.interfaceurl);
+			var response = md5(challenge + this_account.password);
+			var params = "mode=sessiongenerate" +
+						"&user=" + this_account.username +
+						"&auth_method=challenge" +
+						"&auth_challenge=" + challenge +
+						"&auth_response=" + response;
+			conn.open("POST", this_account.site_info.interfaceurl, false);
+			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			conn.send(params);
+			console.log("Login negotiations completed.  Saving session data.");
+			var ljsession = conn.responseText.split("\n")[1];
+			var session_fields = ljsession.split(":");
+			var now = +new Date() / 1000;
+			chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+			chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now + 60*60*24*365)});
+			this_account.uid = ljsession.split(":")[1];
+			update_account(this_account);
+		});
+		while(conn.responseText == undefined)
+		{
+		}
 		return conn.responseText;
 	}
 	function parse_lj_response(response_text)
 	{
+		console.log("Parsing response from LJ to pass back to the calling page...");
 		var lj_response_lines = response_text.split("\n");
 		var response_to_return = {};
 		for(var i = 0; i < lj_response_lines.length; i++)
@@ -111,7 +118,7 @@
 	}
 	function logout_this_cookie(cookie)
 	{
-		if(cookie)
+		if(cookie != undefined)
 		{
 			console.log("Logout subroutine started...");
 			try
@@ -122,10 +129,9 @@
 				var params = "mode=sessionexpire" +
 							"&auth_method=cookie" +
 							"&expire_id_" + sessid + "=1";
-				conn.open("POST", "http://www.livejournal.com/interface/flat",false);
+				conn.open("POST", get_interface_url_from_cookie(cookie),false);
 				conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				conn.setRequestHeader("X-LJ-Auth","cookie");
-				console.log("Logging out with cookie: " + cookie.value);
 				conn.send(params);
 			}
 			catch (e)
@@ -138,6 +144,19 @@
 			chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
 		}
 		else console.log("No cookie found, no need to log out.");
+	}
+	function get_interface_url_from_cookie(cookie)
+	{
+		console.log("Finding proper interface url to log this cookie out...");
+		for(var i = 0; i < LJlogin_sites.length; i++)
+		{
+			console.log("Checking " + cookie.domain + " against " + LJlogin_sites[i].domain);
+			if(cookie.domain == LJlogin_sites[i].domain)
+			{
+				return LJlogin_sites[i].interfaceurl;
+			}
+		}
+		return false;
 	}
 	function update_account(change_me)
 	{
@@ -180,18 +199,17 @@
 		{
 			console.log("2.0.0 updates in progress");
 				// Resave passwords as MD5 hashes for a slight security bump.
-			var old_account_list = [];
-			if(localStorage["lj_juggler_accounts"] != undefined) old_account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+			var account_list = [];
+			if(localStorage["lj_juggler_accounts"] != undefined) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
 			console.log("update passwords to hashed versions");
-			for(var i = 0; i < old_account_list.length; i++)
+			for(var i = 0; i < account_list.length; i++)
 			{
-				var account = old_account_list[i];
-				var old_password = account.passsword;
-				account.password = md5(account.password);
-				console.log("replacing " + old_password + " with " + account.password);
+				var old_password = account_list[i].passsword;
+				account_list[i].password = md5(account_list[i].password);
+				console.log("replacing " + old_password + " with " + account_list[i].password);
 			}
 			console.log("push changes to localStorage");
-			localStorage["lj_juggler_accounts"] = JSON.stringify(old_account_list);
+			localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
 
 			// We now use a cookie check to see who a use is logged in as.  So clean up the old data.
 			console.log("removing lastSelected from localStorage");
@@ -199,6 +217,23 @@
 			
 			console.log("push version 2.0.0 into the version_history_list");
 			version_history_list.push("2.0.0");
+		}
+		if(!find_in_array(version_history_list, "3.0.0"))
+		{
+			console.log("3.0.0 updates in progress");
+				// All existing accounts must be with LiveJournal, not one of the clones, so attach the LiveJournal information to each account.
+			var account_list = [];
+			if(localStorage["lj_juggler_accounts"] != undefined) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+			console.log("attach site-info for LiveJournal to existing accounts.");
+			for(var i = 0; i < account_list.length; i++)
+			{
+				account_list[i].site_info = LJlogin_sites[0];
+			}
+			console.log("push changes to localStorage");
+			localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
+			
+			console.log("push version 3.0.0 into the version_history_list");
+			version_history_list.push("3.0.0");
 		}
 		console.log("updating version_history_list in localStorage: " + version_history_list);
 		localStorage["version_history_list"] = version_history_list;
