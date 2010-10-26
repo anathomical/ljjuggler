@@ -31,6 +31,11 @@
 			padding: 4px;
 			width: 100px;
 		}
+		select {
+			display: block;
+			padding: 4px;
+			width:100px;
+		}
 		button {
 			background: url(deleteaccount.png) no-repeat;
 			border: none;
@@ -71,6 +76,7 @@
 		</style>
         
 		<script type="text/javascript" src="md5.js"></script>
+		<script type="text/javascript" src="lj_site_definitions.js"></script>
 		<script type="text/javascript">
 function drawlist()
 {
@@ -89,10 +95,20 @@ function drawlist()
 			delete_button.id = account.username;
 			delete_button.onclick = delete_clicker(account);
 			delete_button.innerHTML = "";
-			next_account.innerHTML = account.username;
+			next_account.innerHTML = account.username + " (" + account.site_info.name + ")";
 			next_account.appendChild(delete_button);
 			document.getElementById("account-list").appendChild(next_account);
 		}
+		
+		for(var i = 0; i < LJlogin_sites.length; i++)
+		{
+			var site = LJlogin_sites[i];
+			var next_option = document.createElement("option");
+			next_option.value = i;
+			next_option.innerHTML = site.name;
+			document.getElementById("sitedropdown").appendChild(next_option);
+		}
+		
 		document.getElementById("username").focus();
 	});
 }
@@ -122,11 +138,12 @@ function delete_account(username)
 }
 function save_new_account()
 {
-	username = document.getElementById("username").value;
-	password = md5(document.getElementById("password").value);
+	var username = document.getElementById("username").value;
+	var password = md5(document.getElementById("password").value);
+	var site_info_index = document.getElementById("sitedropdown").value;
 	if(username && password)
 	{
-		chrome.extension.sendRequest({"command":"login","account":{"username":username,"password":password}}, function (response)
+		chrome.extension.sendRequest({"command":"login","account":{"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]}}, function (response)
 		{
 			if(response.code == "ok")
 			{
@@ -134,7 +151,7 @@ function save_new_account()
 				{
 					var account_list = [];
 					if(response.value) account_list = JSON.parse(response.value);
-					account_to_add = {"username":username,"password":password};
+					account_to_add = {"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]};
 					account_list.push(account_to_add);
 					chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
 				});
@@ -164,6 +181,7 @@ function accountsort(account_one, account_two)
 		</ul>
 		<h3>Add an account:</h3>
 		<form onSubmit="return save_new_account();">
+			<label>Site:</label> <select id="sitedropdown"></select>
 			<label>Username:</label> <input type="text" id="username"/><br/>
 			<label>Password:</label> <input type="password" id="password"/><br/>
 			<input type="submit" value="" class="submit">
