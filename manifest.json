@@ -1,6 +1,6 @@
 {
   "name":"LJ Account Juggler",
-  "version":"2.2.0",
+  "version":"3.0.0",
   "description":"A solution for LiveJournal account switching in Chrome",
   "update_url":"http://rushin-doll.net/lj-juggler/updates.xml",
   "options_page":"options.html",
@@ -21,6 +21,18 @@
 	"tabs",
 	"cookies",
     "http://*.livejournal.com/*",
-	"https://*.livejournal.com/*"
+	"https://*.livejournal.com/*",
+	"http://*.insanejournal.com/*",
+	"https://*.insanejournal.com/*",
+	"http://*.journalfen.net/*",
+	"https://*.journalfen.net/*",
+	"http://*.deadjournal.com/*",
+	"https://*.deadjournal.com/*",
+	"http://*.scribbld.net/*",
+	"https://*.scribbld.net/*",
+	"http://*.dreamwidth.org/*",
+	"https://*.dreamwidth.org/*",
+	"http://*.inksome.com/*",
+	"https://*.inksome.com/*"
   ]
 }
