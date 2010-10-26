@@ -92,7 +92,7 @@
 					var next_option = generate_option(account_list[i]);
 					document.getElementById("user_list").appendChild(next_option);
 				}
-				chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljmastersession"}, highlight_active_account_by_cookie);
+				draw_ui_highlights(0);
 				console.log("popup.html fully loaded");
 			});
 		}
@@ -103,17 +103,11 @@
 		}
 		function mouseover_this_div(this_div_id)
 		{
-			chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
-			{
-				highlight_active_account_by_cookie(cookie, this_div_id);
-			})
+			draw_ui_highlights(this_div_id);
 		}
 		function mouseout_this_div()
 		{
-			chrome.cookies.get({"url":"http://www.livejournal.com","name":"ljsession"}, function(cookie)
-			{
-				highlight_active_account_by_cookie(cookie, 0);
-			})
+			draw_ui_highlights(0);
 		}
 		function click_this_user_div(this_account)
 		{
@@ -125,7 +119,7 @@
 		{
 			var this_div = document.createElement("div");
 			this_div.setAttribute("class","nohover");
-			this_div.id = this_account.username;
+			this_div.id = this_account.site_info.name + this_account.username;
 			this_div.innerHTML = this_account.username;
 			this_div.onmouseover = function (this_div)
 			{
@@ -150,26 +144,40 @@
 			else if(account_one.username < account_two.username) return -1;
 			else if(account_one.username > account_two.username) return 1;
 		}
-		function highlight_active_account_by_cookie(cookie, hover_id)
+		function highlight_account(account, hover_id)
+		{
+			chrome.cookies.get({"url":account.site_info.cookieurl,"name":account.site_info.cookiename}, function (cookie) {
+				console.log(account.username + hover_id + cookie.domain);
+				var target_element = document.getElementById(account.site_info.name + account.username);
+				console.log(target_element.id == hover_id);
+				if(cookie != undefined)
+				{
+					var saved_uid = cookie.value.split(":")[1];
+					if(saved_uid == account.uid)
+					{
+						if(hover_id == target_element.id) target_element.setAttribute("class","select-hover");
+						else target_element.setAttribute("class","select-nohover");
+					}
+					else
+					{
+						if(hover_id == target_element.id) target_element.setAttribute("class","hover");
+						else target_element.setAttribute("class","nohover");
+					}
+				}
+				else if(hover_id == target_element.id) target_element.setAttribute("class","hover");
+				else target_element.setAttribute("class","nohover");
+			});
+		}
+		function draw_ui_highlights(hover_id)
 		{
 			chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 			{
-				var extracted_uid = "";
 				var account_list = [];
-				if(cookie) extracted_uid = cookie.value.split(":")[1];
 				if(response.value != undefined) account_list = JSON.parse(response.value);
-				var logged_username = get_username_from_uid(extracted_uid, account_list);
-				console.log("highlighting " + hover_id + " : " + logged_username);
-				var user_list = document.getElementById("user_list").childNodes;
-				for(var i = 0; i < user_list.length; i++)
+				for(var i = 0; i < account_list.length; i++)
 				{
-					if(user_list[i].id == logged_username)
-					{
-						if(hover_id == user_list[i].id) user_list[i].setAttribute("class","select-hover");
-						else user_list[i].setAttribute("class","select-nohover");
-					}
-					else if(hover_id == user_list[i].id) user_list[i].setAttribute("class","hover");
-					else user_list[i].setAttribute("class","nohover"); 
+					var account = account_list[i];
+					highlight_account(account, hover_id);
 				}
 				var option_list = document.getElementById("option_list").childNodes;
 				for(var i = 0; i < option_list.length; i++)
