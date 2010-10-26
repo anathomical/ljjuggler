@@ -147,11 +147,12 @@ function save_new_account()
 		{
 			if(response.code == "ok")
 			{
+				var uid = response.uid;
 				chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 				{
 					var account_list = [];
 					if(response.value) account_list = JSON.parse(response.value);
-					account_to_add = {"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]};
+					account_to_add = {"username":username,"password":password,"uid":uid,"site_info":LJlogin_sites[site_info_index]};
 					account_list.push(account_to_add);
 					chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
 				});
