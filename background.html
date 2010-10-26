@@ -24,8 +24,11 @@
 				else if(request.command == "login")
 				{
 					console.log("Logging in as... " + request.account.username);
-					var response_to_send = parse_lj_response(loginas(request.account));
-					sendResponse(response_to_send);
+					chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
+						logout_this_cookie(cookie);
+						var response_to_send = parse_lj_response(loginas(request.account));
+						sendResponse(response_to_send);
+					});
 				}
 				else if(request.command == "localStorage")
 				{
@@ -73,33 +76,26 @@
 	}
 	function loginas(this_account)
 	{
-		console.log("Checking to see if logging-out needs to happen...");
 		var conn = new XMLHttpRequest();
-		chrome.cookies.get({"url":this_account.site_info.cookieurl,"name":this_account.site_info.cookiename}, function(cookie) {
-			logout_this_cookie(cookie);
-			console.log("Beginning the login dance...");
-			var challenge = getLJchallenge(this_account.site_info.interfaceurl);
-			var response = md5(challenge + this_account.password);
-			var params = "mode=sessiongenerate" +
-						"&user=" + this_account.username +
-						"&auth_method=challenge" +
-						"&auth_challenge=" + challenge +
-						"&auth_response=" + response;
-			conn.open("POST", this_account.site_info.interfaceurl, false);
-			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-			conn.send(params);
-			console.log("Login negotiations completed.  Saving session data.");
-			var ljsession = conn.responseText.split("\n")[1];
-			var session_fields = ljsession.split(":");
-			var now = +new Date() / 1000;
-			chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
-			chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now + 60*60*24*365)});
-			this_account.uid = ljsession.split(":")[1];
-			update_account(this_account);
-		});
-		while(conn.responseText == undefined)
-		{
-		}
+		console.log("Beginning the login dance...");
+		var challenge = getLJchallenge(this_account.site_info.interfaceurl);
+		var response = md5(challenge + this_account.password);
+		var params = "mode=sessiongenerate" +
+					"&user=" + this_account.username +
+					"&auth_method=challenge" +
+					"&auth_challenge=" + challenge +
+					"&auth_response=" + response;
+		conn.open("POST", this_account.site_info.interfaceurl, false);
+		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		conn.send(params);
+		console.log("Login negotiations completed.  Saving session data.");
+		var ljsession = conn.responseText.split("\n")[1];
+		var session_fields = ljsession.split(":");
+		var now = +new Date() / 1000;
+		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now + 60*60*24*365)});
+		this_account.uid = ljsession.split(":")[1];
+		update_account(this_account);
 		return conn.responseText;
 	}
 	function parse_lj_response(response_text)
@@ -107,13 +103,17 @@
 		console.log("Parsing response from LJ to pass back to the calling page...");
 		var lj_response_lines = response_text.split("\n");
 		var response_to_return = {};
-		for(var i = 0; i < lj_response_lines.length; i++)
-		{
-			console.log(lj_response_lines[i]);
-		}
 		if(lj_response_lines[0] == "errmsg") response_to_return.code = "error";
 		else response_to_return.code = "ok";
 		response_to_return.message = lj_response_lines[1];
+		try
+		{
+			response_to_return.uid = lj_response_lines[1].split(":")[1];
+		}
+		catch (e)
+		{
+			response_to_return.uid = "";
+		}
 		return response_to_return;
 	}
 	function logout_this_cookie(cookie)
