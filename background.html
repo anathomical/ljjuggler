@@ -193,7 +193,18 @@
 		alert("LJ Juggler has been updated to the latest version: " + current_version);
 		localStorage["lj_juggler_version"] = current_version;
 		var version_history_list = [];
-		if(localStorage["version_history_list"] != undefined) version_history_list = JSON.parse(localStorage["version_history_list"]);
+		console.log("retrieve version history list from localStorage");
+		if(localStorage["version_history_list"] != undefined)
+		{
+			try
+			{
+				version_history_list = JSON.parse(localStorage["version_history_list"]);
+			}
+			catch (e)
+			{
+				version_history_list = [localStorage["version_history_list"]];
+			}
+		}
 		console.log("run updates in order");
 		if(!find_in_array(version_history_list, "2.0.0"))
 		{
@@ -236,7 +247,7 @@
 			version_history_list.push("3.0.0");
 		}
 		console.log("updating version_history_list in localStorage: " + version_history_list);
-		localStorage["version_history_list"] = version_history_list;
+		localStorage["version_history_list"] = JSON.stringify(version_history_list);
 	}
 	function find_in_array(array, value)
 	{
