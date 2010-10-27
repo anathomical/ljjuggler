@@ -164,7 +164,7 @@
 		var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
 		for(var i = 0; i < account_list.length; i++)
 		{
-			if(account_list[i].username == change_me.username) account_list[i] = change_me;
+			if(account_list[i].username == change_me.username && account_list[i].site_info == change_me.site_info) account_list[i] = change_me;
 		}
 		localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
 	}
