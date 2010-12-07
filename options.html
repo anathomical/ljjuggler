@@ -99,14 +99,16 @@ function drawlist()
 			next_account.appendChild(delete_button);
 			document.getElementById("account-list").appendChild(next_account);
 		}
-		
-		for(var i = 0; i < LJlogin_sites.length; i++)
+		if (document.getElementById("sitedropdown").childNodes.length != LJlogin_sites.length)
 		{
-			var site = LJlogin_sites[i];
-			var next_option = document.createElement("option");
-			next_option.value = i;
-			next_option.innerHTML = site.name;
-			document.getElementById("sitedropdown").appendChild(next_option);
+			for(var i = 0; i < LJlogin_sites.length; i++)
+			{
+				var site = LJlogin_sites[i];
+				var next_option = document.createElement("option");
+				next_option.value = i;
+				next_option.innerHTML = site.name;
+				document.getElementById("sitedropdown").appendChild(next_option);
+			}
 		}
 		
 		document.getElementById("username").focus();
