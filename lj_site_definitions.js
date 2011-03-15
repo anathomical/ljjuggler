@@ -31,10 +31,10 @@ var LJlogin_sites = [
 	},
 	{
 		name: 'Scribbld',
-		domain: '.scribbld.net',
-		cookieurl: 'http://www.scribbld.net/',
+		domain: '.scribbld.com',
+		cookieurl: 'http://www.scribbld.com/',
 		cookiename: 'ljmastersession',
-		interfaceurl: 'http://www.scribbld.net/interface/flat',
+		interfaceurl: 'http://www.scribbld.com/interface/flat',
 	},
 	{
 		name: 'Dreamwidth',
