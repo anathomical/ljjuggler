@@ -101,11 +101,13 @@
 				account_list.sort(accountsort);
 				
 				var current_site = '';
+				var sites_count = 0;
 				for(var i = 0; account_list[i]; i++)
 				{
 					// If this is the first account from this site, add a heading for the site.
 					if(account_list[i].site_info.name != current_site)
 					{
+						sites_count++;
 						var this_header = document.createElement('div');
 						this_header.setAttribute('class','site-label');
 						this_header.innerHTML = account_list[i].site_info.name;
@@ -114,6 +116,13 @@
 					}
 					var next_option = generate_option(account_list[i]);
 					document.getElementById("user_list").appendChild(next_option);
+				}
+				// If all the accounts are from a single site, we can actually remove the site label as extraneous.
+				if(sites_count < 2)
+				{
+					var kill_me = document.getElementsByTagName('site-label');
+					if(kill_me.length > 0)
+						kill_me[0].parentNode.removeChild(kill_me[0]);
 				}
 				draw_ui_highlights("initialize", 0);
 			});
