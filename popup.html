@@ -101,13 +101,11 @@
 				account_list.sort(accountsort);
 				
 				var current_site = '';
-				var sites_count = 0;
 				for(var i = 0; account_list[i]; i++)
 				{
 					// If this is the first account from this site, add a heading for the site.
 					if(account_list[i].site_info.name != current_site)
 					{
-						sites_count++;
 						var this_header = document.createElement('div');
 						this_header.setAttribute('class','site-label');
 						this_header.innerHTML = account_list[i].site_info.name;
@@ -118,12 +116,9 @@
 					document.getElementById("user_list").appendChild(next_option);
 				}
 				// If all the accounts are from a single site, we can actually remove the site label as extraneous.
-				if(sites_count < 2)
-				{
-					var kill_me = document.getElementsByTagName('site-label');
-					if(kill_me.length > 0)
-						kill_me[0].parentNode.removeChild(kill_me[0]);
-				}
+				var kill_me = document.getElementsByClassName('site-label');
+				if(kill_me.length < 2)
+					kill_me[0].parentNode.removeChild(kill_me[0]);
 				draw_ui_highlights("initialize", 0);
 			});
 		}
@@ -197,40 +192,22 @@
 					if(saved_uid == account.uid)
 					{
 						if(hover_id == target_element.id)
-						{
-							console.log("Set " + target_element.id + " class to select-hover");
 							target_element.setAttribute("class","select-hover");
-						}
 						else
-						{
-							console.log("Set " + target_element.id + " class to select-nohover");
 							target_element.setAttribute("class","select-nohover");
-						}
 					}
 					else
 					{
 						if(hover_id == target_element.id)
-						{
-							console.log("Set " + target_element.id + " class to hover");
 							target_element.setAttribute("class","hover");
-						}
 						else
-						{
-							console.log("Set " + target_element.id + " class to nohover");
 							target_element.setAttribute("class","nohover");
-						}
 					}
 				}
 				else if(hover_id == target_element.id)
-				{
-					console.log("Set " + target_element.id + " class to hover");
 					target_element.setAttribute("class","hover");
-				}
 				else
-				{
-					console.log("Set " + target_element.id + " class to nohover");
 					target_element.setAttribute("class","nohover");
-				}
 			});
 		}
 		function draw_ui_highlights(mode, hover_id)
@@ -271,13 +248,8 @@
 		function get_username_from_uid(uid, account_list)
 		{
 			for(var i = 0; i < account_list.length; i++)
-			{
 				if(account_list[i].uid == uid)
-				{
-					console.log(account_list[i].username);
 					return account_list[i].username;
-				}
-			}
 			return false;
 		}
 		
