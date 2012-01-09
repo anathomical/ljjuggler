@@ -26,23 +26,8 @@
 					console.log("Logging in as... " + request.account.username);
 					chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
 						logout_this_cookie(cookie);
-						
-						// Due to LiveJournal.com's new system for cookies, we have to parse out the uid from the set cookie rather than from the response, which requires an override here.
-						if(request.account.site_info.name == "LiveJournal")
-						{
-							var response_to_send = parse_lj_response(loginas(request.account));
-							chrome.cookies.get({"url":request.account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
-								console.log(cookie);
-								console.log(response_to_send);
-								response_to_send.uid = cookie.value.split(":")[1];
-								sendResponse(response_to_send);
-							});
-						}
-						else
-						{
-							var response_to_send = parse_lj_response(loginas(request.account));
-							sendResponse(response_to_send);
-						}
+						var response_to_send = parse_lj_response(loginas(request.account));
+						sendResponse(response_to_send);
 					});
 				}
 				else if(request.command == "localStorage")
@@ -100,47 +85,17 @@
 					"&auth_method=challenge" +
 					"&auth_challenge=" + challenge +
 					"&auth_response=" + response;
-		// Due to a change in LiveJournal.com's cookie handling, we have to do this hacky login in order to hit up cookie headers directly
-		if(this_account.site_info.name == 'LiveJournal')
-		{
-			params = "user=" + this_account.username +
-					"&chal=" + challenge +
-					"&response=" + response;
-			conn.open("POST", "http://www.livejournal.com/login.bml", false);
-		}
-		// All other implementations of LJ code seem to use the documented behavior, so this works just fine.
-		else
-			conn.open("POST", this_account.site_info.interfaceurl, false);
+		conn.open("POST", this_account.site_info.interfaceurl, false);
 		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		conn.send(params);
 		console.log("Login negotiations completed.  Saving session data.");
-		return save_cookie_data(this_account, conn);
-	}
-	function save_cookie_data(this_account, conn)
-	{
-		// Due to an undocumented change in the way LiveJournal.com handles cookies, they have to be parsed in a completely different manner.  Yay.
-		if(this_account.site_info.name == 'LiveJournal')
-		{
-			// We've hit /login.bml directly, so the cookies have now set themselves.  (All of them, not just the login ones, nothing breaks, but ugh is it inefficient.)
-
-			// We do need to manually extract the cookies so that we can get the user's uid.
-			chrome.cookies.get({"url":this_account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
-				this_account.uid = cookie.value.split(":")[1];
-				update_account(this_account);
-			});
-		}
-		else
-		{
-			// Process standard LJ code, which isn't used by LiveJournal.com anymore.
-			var ljsession = conn.responseText.split("\n")[1];
-			var ljloggedin = ljsession.split(":")[1] + ":" + ljsession.split(":")[2];
-
-			var now = +new Date() / 1000;
-			chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
-			chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":ljloggedin, "expirationDate":(now + 60*60*24*365)});
-			this_account.uid = ljsession.split(":")[1];
-			update_account(this_account);
-		}
+		var ljsession = conn.responseText.split("\n")[1];
+		var session_fields = ljsession.split(":");
+		var now = +new Date() / 1000;
+		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":session_fields[1] + ":" + session_fields[2], "expirationDate":(now + 60*60*24*365)});
+		this_account.uid = ljsession.split(":")[1];
+		update_account(this_account);
 		return conn.responseText;
 	}
 	function parse_lj_response(response_text)
