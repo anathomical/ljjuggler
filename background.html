@@ -105,7 +105,8 @@
 		{
 			params = "user=" + this_account.username +
 					"&chal=" + challenge +
-					"&response=" + response;
+					"&response=" + response +
+					"&remember_me=1";
 			conn.open("POST", "http://www.livejournal.com/login.bml", false);
 		}
 		// All other implementations of LJ code seem to use the documented behavior, so this works just fine.
