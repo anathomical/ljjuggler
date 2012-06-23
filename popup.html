@@ -1,93 +1,90 @@
 <html>
 	<head>
 		<style type="text/css">
-		body
-		{
-			background-color:#fff;
+		body {
+			font: normal 100% Verdana, Helvetica, sans-serif;
+			background-color: #fff;
+			color: #000;
+			margin: 0;
+			padding: 0;
 			overflow-y: auto;
 			overflow-x: hidden;
-			padding-right: 15px;
 		}
-		div
-		{
-			color: #000;
-			font: normal 16px Georgia, "Times New Roman", Times, serif;
-			margin: 3px 0px;
-			padding: 0px;
-			width: 193px;	
-			text-shadow: 1px 1px 0px #E1E1E1;
+		div#wrapper {
+			margin: 0;
+			padding: 0;
+			display: inline-block;
 		}
-		div#title
-		{
-			cursor: default;
-			font-size: 18px;
-			font-variant: small-caps;
-			padding-bottom: 6px;
-			text-align: center;
-			text-shadow: none;
-		}
-		div#user_list .nohover
-		{
-			background: url(images/nohover.png) no-repeat;
-			color:#000000;
-			padding: 4px 4px 8px 40px;
-		}
-		div#user_list .hover
-		{
-			background: url(images/hover.png) no-repeat;
-			color:#075a64;
+		div#user_list .nohover {
+			background: url(images/user.png) no-repeat 4px center;
+			color: #333333;
+			font-size: 12px;
+			font-weight: bold;
 			cursor: pointer;
-			padding: 4px 4px 8px 40px;
+			padding: 4px 6px 4px 19px;
 		}
-		div#user_list .select-hover
-		{
-			background: url(images/selected-hover.png) no-repeat;
-			color:#07511d;
-			cursor: default;
-			padding: 4px 4px 8px 40px;
+		div#user_list .hover {
+			background: #f5f6f7 url(images/user_hover.png) no-repeat 4px center;
+			color: #147a23;
+			font-size: 12px;
+			font-weight: bold;
+			cursor: pointer;
+			margin: 0;
+			padding: 4px 6px 4px 19px;
 		}
-		div#user_list .select-nohover
-		{
-			background: url(images/selected.png) no-repeat;
-			color: #017a25;
+		div#user_list .select-nohover {
+			background: url(images/user_selected.png) no-repeat 4px center;
+			font-size: 12px;
+			font-weight: bold;
+			font-style: italic;
+			color: #217a86;
 			cursor: default;
-			padding: 4px 4px 8px 40px;
+			margin: 0;
+			padding: 4px 6px 4px 19px;
 		}
-		div#user_list .site-label
-		{
+		div#user_list .select-hover {
+			background: #f5f6f7 url(images/user_selected.png) no-repeat 4px center;
+			font-size: 12px;
+			font-weight: bold;
+			font-style: italic;
+			color: #217a86;
 			cursor: default;
-			font-size: 14px;
-			font-variant: small-caps;
+			margin: 0;
+			padding: 4px 6px 4px 19px;
+		}
+		div#user_list .site-label {
+			color: #888;
+			cursor: default;
+			font-size: 10px;
+			margin: 0;
+			padding: 4px;
 			text-align: center;
-			text-shadow: none;
-			padding-top: 5px;
 		}
-		div#option_list .nohover
-		{
-			background: url(images/option_list.png) no-repeat;
-			margin: 10px 3px 10px 0px;
-			padding: 4px 4px 8px 40px;
-		}
-		div#option_list .hover
-		{
-			background: url(images/option_list_hover.png) no-repeat;
+		div#option_list .nohover {
+			border-top: 1px solid #d9dadb;
+			font-size: 12px;
+			margin: 4px 0 0 0;
+			padding: 8px 0 4px 16px;
+		} 
+		div#option_list .hover {
+			border-top: 1px solid #d9dadb;
 			color: #b30000;
+			font-size: 12px;
 			cursor: pointer;
-			margin: 10px 3px 10px 0px;
-			padding: 4px 4px 8px 40px;
+			margin: 4px 0 0 0;
+			padding: 8px 0 4px 16px;
 		}
-		div.options
-		{
+		div.options {
 			color: #666;
-			cursor: pointer;
-			font: normal 12px Arial, Helvetica, sans-serif;
-			padding-top: 2px;
-			text-align: center;
-			text-shadow: none;
+			font-size: 12px;
+			margin: 0 0 0 0;
+			padding: 4px 16px 4px 16px;
+			white-space: nowrap;
 		}
-		div.small { border-top: 1px solid #DCDCDC; color: #DCDCDC; font-size: 11px; margin-top: 10px; }
-		div.options a { color: #b30000; text-decoration: none; }
-		div.options a:hover { color: #075a64; text-decoration: underline; }
+		a:link { color: #000; text-decoration: none; }
+		a:visited { color: #000; text-decoration: none; }
+		a:hover { color: #b30000; text-decoration: none; }
+		:focus { outline: none; }
 
 
 		</style>
@@ -257,13 +254,13 @@
             
             
 	</head>
-	<body onLoad="page_loaded();">
-    	<div id="title">LJ Juggler</div>
+	<body onload="page_loaded();">
+		<div id="wrapper">
 		<div id="user_list" name="user_list"></div>
         <div id="option_list" name="option_list">
 			<div id="livejournal_logout" class="nohover" onclick="click_logout_div();" onmouseover="mouseover_this_div('livejournal_logout');" onmouseout="mouseout_this_div();">Log out</div>
 		</div>
-		<div class="options"><a href="#" onclick="chrome.tabs.create({'url': chrome.extension.getURL('options.html')});">Add or Remove Accounts</a></div>
-		<div class="options small"><a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/'});">About</a> | <a href="#" onclick="chrome.tabs.create({'url': 'http://rushin-doll.net/lj-juggler/change-log.html'});">Changelog</a> | <a href="#" onclick="chrome.tabs.create({'url': 'http://metanomaly.livejournal.com'});">Interface</a></div>
-	</body>
-</html>
+		<div class="options"><a href="#" onclick="chrome.tabs.create({'url': chrome.extension.getURL('options.html')});">Manage Accounts</a></div>
+		</div>
+
+</body></html>

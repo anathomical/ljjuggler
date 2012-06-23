@@ -1,78 +1,159 @@
 <html>
 	<head>
-		<title>Account Juggler - Options</title>
+		<title>LJ Juggler - Options</title>
         
         <style type="text/css">
 		body {
-			background-color: #999;
-			font: normal 16px Georgia, "Times New Roman", Times, serif;
-			margin: 0;	
+			background-color: #e9eaeb;
+			font: normal 100% Verdana, Helvetica, sans-serif;
+			margin: 1.5em auto;
+			text-align: center;
 		}
 		#wrapper {
 			background-color: #fff;
-			margin: 2em auto;
-			padding: 5px 25px 25px 25px;
-			width: 267px;
+			text-align: left;
+			padding: 1em 2em 0.5em 2em;
+			width: auto;
+			border: 1px solid #c9cacb;
 			-webkit-border-radius: 10px;
 			-moz-border-radius: 10px;
 			border-radius: 10px;
-			-webkit-box-shadow: 1px 1px 4px #000;
-			-moz-box-shadow: 1px 1px 4px #000;
-			box-shadow: 1px 1px 4px #000;
+			display: inline-block;
+			position: relative;
 		}
+		ul { padding: 0; margin: 0; }
 		ul li {
-			background: url(images/user.png) no-repeat 0 50%;
+			background: url(images/user.png) no-repeat 15px center;
 			list-style-type: none;
-			padding: 4px 0px 4px 20px;
+			font-size: 0.75em;
+			font-weight: bold;
+			margin: 2px;
+			padding: 2px 0 2px 30px;
 		}
-		label {
-			display: block;
-			float: left;
-			padding: 4px;
-			width: 100px;
+		.journal-site {
+			padding: 2px 0 0 8px;
+			margin: 0;
+			font-weight: normal;
+			font-size: 0.8em;
+			text-align: right;
+			position: absolute;
+			right: 75px;
 		}
-		select {
-			display: block;
-			padding: 4px;
-			width:100px;
+		ul li:hover {
+			background-color: #f5f6f7;
 		}
 		button {
-			background: url(images/deleteaccount.png) no-repeat;
+			background: url(images/deleteaccount.png) no-repeat center center;
 			border: none;
 			cursor: pointer;
-			font: normal 16px Georgia, "Times New Roman", Times, serif;
-			height: 20px;
-			margin-left: 10px;
-			width: 21px;
+			margin: 0 15px 0 4px;
+			padding: 0;
+			height: 14px;
+			width: 13px;
+			float: right;
+		}
+		button:hover {
+			background: url(images/deleteaccount_hover.png) no-repeat center center;
+			border: none;
+			cursor: pointer;
+			margin: 0 15px 0 4px;
+			padding: 0;
+			height: 14px;
+			width: 13px;
+			float: right;
+		}
+		select {
+			border: 1px solid #7a7a7b;
+			display: block;
+			padding: 4px;
+			width: 120px;
+		}
+		label {
+			font: 0.6em Verdana, Helvetica, sans-serif;
+			line-height: 1em;
+			display: inline;
+			float: left;
+			text-align: right;
+			padding: 4px 10px 4px 0;
+			width: 80px;
+		}
+		#username, #password {
+			border: 1px solid #7a7a7b;
+			background-color: #fafafa;
+			width: 120px;
+		}
+		#username:hover, #password:hover {
+			border: 1px solid #000;
+			background-color: #fdfdfd;
+			width: 120px;
+		}
+		#username:focus, #password:focus {
+			border: 1px solid #000;
+			background-color: #fdfdfd;
+			width: 120px;
 		}
 		.submit {
-			background: url(images/addaccount.png) no-repeat;
-			border: none;
+			background: #e9eaeb url(images/addaccount.png) no-repeat 6px 50%;
+			font-size: 0.8em;
 			cursor: pointer;
 			float: right;
-			height: 29px;
-			margin: 15px 0 0 0;
-			width: 139px;
+			margin: 15px 0 1.5em 0;
+			padding: 4px 6px 4px 26px;
+			border: 1px solid #c9cacb;
+			width: auto;
+		}
+		.submit:hover {
+			color: #147a23;
+			background: #f5f6f7 url(images/addaccount_hover.png) no-repeat 6px 50%;
+			font-size: 0.8em;
+			cursor: pointer;
+			float: right;
+			margin: 15px 0 1.5em 0;
+			padding: 4px 6px 4px 26px;
+			border: 1px solid #d9dadb;
+		}
+		.submit:active {
+			background-color: #edeeef;
+			border: 1px solid #d5d6d7;
 		}
 		h1 {
-			font-variant: small-caps;
+			font-size: 1.3em;
 			font-weight: normal;
 			text-align: center;
+			margin: 0;
+			padding: 0;
 		}
-		h2, h3 {
-			color: #b30000;
-			font-style: italic;
+		h2 {
+			font-size: 1em;
 			font-weight: normal;
+			font-style: italic;
+			text-align: center;
+			margin: 0;
+			padding: 0;
+		}
+		h3 {
+			font-size: 0.9em;
+			color: #217a86;
+			font-weight: normal;
+		}
+		hr {
+			width: 75%;
+			height: 1px;
+			border: 0;
+			background-color: #d9dadb;
+			margin: 1em auto;
 		}
 		p.desc {
 			clear: both;
 			color: #666;
-			font: normal 11px Arial, Helvetica, sans-serif;
-			padding-top: 25px;
+			font-size: 0.6em;
 			text-align: center;
 		}
-		a { color: #b30000; text-decoration: none; }
-		a:hover { color: #075a64; text-decoration: underline; }
+		a:link { color: #a20000; text-decoration: none; }
+		a:visited { color: #a20000; text-decoration: none; }
+		a:active { color: #f00; text-decoration: none; }
+		a:hover { color: #000; text-decoration: none; }
+		:focus { outline: 1px dotted #999; }
 		</style>
         
 		<script type="text/javascript" src="js/md5.js"></script>
@@ -95,7 +176,7 @@ function drawlist()
 			delete_button.id = account.username;
 			delete_button.onclick = delete_clicker(account);
 			delete_button.innerHTML = "";
-			next_account.innerHTML = account.username + " (" + account.site_info.name + ")";
+			next_account.innerHTML = account.username + '<span class="journal-site">' + account.site_info.nickname + '</span>';
 			next_account.appendChild(delete_button);
 			document.getElementById("account-list").appendChild(next_account);
 		}
@@ -175,23 +256,25 @@ function initialize()
 }
 		</script>
 	</head>
-	<body onLoad="initialize();">
+	<body onload="initialize();">
     
     <div id="wrapper">
     
     	<h1>LJ Juggler</h1>
+    	<h2>Account Management</h2>
+    	<hr>
 		<h3>Accounts:</h3>
 		<ul id="account-list">
 		</ul>
 		<h3>Add an account:</h3>
-		<form onSubmit="return save_new_account();">
+		<form onsubmit="return save_new_account();">
 			<label>Site:</label> <select id="sitedropdown"></select>
-			<label>Username:</label> <input type="text" id="username"/><br/>
-			<label>Password:</label> <input type="password" id="password"/><br/>
-			<input type="submit" value="" class="submit">
+			<label>Username:</label> <input type="text" id="username"><br />
+			<label>Password:</label> <input type="password" id="password"><br />
+			<input type="submit" value="Add Account" class="submit">
 		</form>
-        <p class="desc">LJ Account Juggler: <a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Changelog</a> | <a href="http://metanomaly.livejournal.com">Interface</a></p>
-        
-     </div>
+		<hr>
+        <p class="desc"><a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Changelog</a> | <a href="http://mistletotem.dreamwidth.org/">CSS</a></p>
+	</div>
 	</body>
 </html>
