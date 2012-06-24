@@ -10,12 +10,16 @@
 			overflow-y: auto;
 			overflow-x: hidden;
 		}
+		ul {
+			list-style-type: none;
+			padding-left: 0;
+		}
 		div#wrapper {
 			margin: 0;
 			padding: 0;
 			display: inline-block;
 		}
-		div#user_list .nohover {
+		#user_list li.nohover {
 			background: url(images/user.png) no-repeat 4px center;
 			color: #333333;
 			font-size: 12px;
@@ -23,7 +27,7 @@
 			cursor: pointer;
 			padding: 4px 6px 4px 19px;
 		}
-		div#user_list .hover {
+		#user_list li.hover {
 			background: #f5f6f7 url(images/user_hover.png) no-repeat 4px center;
 			color: #147a23;
 			font-size: 12px;
@@ -32,7 +36,7 @@
 			margin: 0;
 			padding: 4px 6px 4px 19px;
 		}
-		div#user_list .select-nohover {
+		#user_list li.select-nohover {
 			background: url(images/user_selected.png) no-repeat 4px center;
 			font-size: 12px;
 			font-weight: bold;
@@ -42,7 +46,7 @@
 			margin: 0;
 			padding: 4px 6px 4px 19px;
 		}
-		div#user_list .select-hover {
+		#user_list li.select-hover {
 			background: #f5f6f7 url(images/user_selected.png) no-repeat 4px center;
 			font-size: 12px;
 			font-weight: bold;
@@ -52,7 +56,7 @@
 			margin: 0;
 			padding: 4px 6px 4px 19px;
 		}
-		div#user_list .site-label {
+		#user_list .site-label {
 			color: #888;
 			cursor: default;
 			font-size: 10px;
@@ -60,19 +64,20 @@
 			padding: 4px;
 			text-align: center;
 		}
-		div#option_list .nohover {
-			border-top: 1px solid #d9dadb;
+		#option_list li.nohover {
 			font-size: 12px;
 			margin: 4px 0 0 0;
 			padding: 8px 0 4px 16px;
 		} 
-		div#option_list .hover {
-			border-top: 1px solid #d9dadb;
+		#option_list li.hover {
 			color: #b30000;
 			font-size: 12px;
 			cursor: pointer;
 			margin: 4px 0 0 0;
 			padding: 8px 0 4px 16px;
+		}
+		ul#option_list {
+			border-top: 1px solid #d9dadb;
 		}
 		div.options {
 			color: #666;
@@ -91,46 +96,19 @@
 		<script type="text/javascript">
 		function page_loaded()
 		{
-			chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
-			{
-				var account_list = [];
-				if(response.value != undefined) account_list = JSON.parse(response.value);
-				account_list.sort(accountsort);
-				
-				var current_site = '';
-				for(var i = 0; account_list[i]; i++)
-				{
-					// If this is the first account from this site, add a heading for the site.
-					if(account_list[i].site_info.name != current_site)
-					{
-						var this_header = document.createElement('div');
-						this_header.setAttribute('class','site-label');
-						this_header.innerHTML = account_list[i].site_info.name;
-						document.getElementById('user_list').appendChild(this_header);
-						current_site = account_list[i].site_info.name;
-					}
-					var next_option = generate_option(account_list[i]);
-					document.getElementById("user_list").appendChild(next_option);
-				}
-				// If all the accounts are from a single site, we can actually remove the site label as extraneous.
-				var kill_me = document.getElementsByClassName('site-label');
-				if(kill_me.length < 2)
-					kill_me[0].parentNode.removeChild(kill_me[0]);
-				draw_ui_highlights("initialize", 0);
-			});
 		}
 		function click_logout_div()
 		{
 			chrome.extension.sendRequest({"command":"logout"});
 			window.close();
 		}
-		function mouseover_this_div(this_div_id)
+		function mouseover_this_element(element_id)
 		{
-			draw_ui_highlights("mouseover", this_div_id);
+			draw_ui_highlights("mouseover", element_id);
 		}
-		function mouseout_this_div(this_div_id)
+		function mouseout_this_element(element_id)
 		{
-			draw_ui_highlights("mouseout", this_div_id);
+			draw_ui_highlights("mouseout", element_id);
 		}
 		function click_this_user_div(this_account)
 		{
@@ -140,7 +118,7 @@
 			
 		function generate_option(this_account)
 		{
-			var this_div = document.createElement("div");
+			var this_div = document.createElement("li");
 			this_div.setAttribute("class","nohover");
 			this_div.id = this_account.site_info.name + this_account.username;
 			this_div.innerHTML = this_account.username;
@@ -148,14 +126,14 @@
 			{
 				return function ()
 				{
-					mouseover_this_div(this_div.id);
+					mouseover_this_element(this_div.id);
 				};
 			}(this_div);
 			this_div.onmouseout = function (this_div)
 			{
 				return function()
 				{
-					mouseout_this_div(this_div.id);
+					mouseout_this_element(this_div.id);
 				};
 			}(this_div);
 			this_div.onclick = function (this_account)
@@ -169,15 +147,11 @@
 		}
 		function accountsort(account_one, account_two)
 		{
-			if(account_one.site_info.name == account_two.site_info.name) return usernamesort(account_one, account_two);
-			else if(account_one.site_info.name < account_two.site_info.name) return -1;
+			if(account_one.site_info.name < account_two.site_info.name) return -1;
 			else if(account_one.site_info.name > account_two.site_info.name) return 1;
-		}
-		function usernamesort(account_one, account_two)
-		{
-			if(account_one.username == account_two.username) return 0;
 			else if(account_one.username < account_two.username) return -1;
 			else if(account_one.username > account_two.username) return 1;
+			else return 0;
 		}
 		function highlight_account(account, hover_id)
 		{
@@ -234,7 +208,7 @@
 				var option_list = document.getElementById("option_list").childNodes;
 				for(var i = 0; i < option_list.length; i++)
 				{
-					if(option_list[i].nodeName == "DIV")
+					if(option_list[i].nodeName == "LI")
 					{
 						if(hover_id == option_list[i].id) option_list[i].setAttribute("class","hover");
 						else option_list[i].setAttribute("class","nohover");
@@ -249,18 +223,63 @@
 					return account_list[i].username;
 			return false;
 		}
+		window.onload = function()
+		{
+			// First dynamically build the page.
+			chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+			{
+				var account_list = [];
+				if(response.value != undefined) account_list = JSON.parse(response.value);
+				account_list.sort(accountsort);
+				
+				var current_site = '';
+				for(var i = 0; account_list[i]; i++)
+				{
+					// If this is the first account from this site, add a heading for the site.
+					if(account_list[i].site_info.name != current_site)
+					{
+						var this_header = document.createElement('div');
+						this_header.setAttribute('class','site-label');
+						this_header.innerHTML = account_list[i].site_info.name;
+						document.getElementById('user_list').appendChild(this_header);
+						current_site = account_list[i].site_info.name;
+					}
+					var next_option = generate_option(account_list[i]);
+					document.getElementById("user_list").appendChild(next_option);
+				}
+				// If all the accounts are from a single site, we can actually remove the site label as extraneous.
+				var kill_me = document.getElementsByClassName('site-label');
+				if(kill_me.length < 2)
+					kill_me[0].parentNode.removeChild(kill_me[0]);
+				draw_ui_highlights("initialize", 0);
+			});
+
+			// Now attach some event handlers.
+			logout_link = document.getElementById('livejournal_logout');
+			logout_link.onmouseover = function(evt) {
+				mouseover_this_element(evt.target.id);
+			}
+			logout_link.onmouseout = function(evt) {
+				mouseout_this_element(evt.target.id);
+			}
+			logout_link.onclick = function(evt) {
+				click_logout_div();
+			}
+			document.getElementById('options_page_link').onclick = function() {
+				chrome.tabs.create({'url': chrome.extension.getURL('options.html')});
+			}
+
+		}
 		
 			</script>
             
             
 	</head>
-	<body onload="page_loaded();">
+	<body>
 		<div id="wrapper">
-		<div id="user_list" name="user_list"></div>
-        <div id="option_list" name="option_list">
-			<div id="livejournal_logout" class="nohover" onclick="click_logout_div();" onmouseover="mouseover_this_div('livejournal_logout');" onmouseout="mouseout_this_div();">Log out</div>
-		</div>
-		<div class="options"><a href="#" onclick="chrome.tabs.create({'url': chrome.extension.getURL('options.html')});">Manage Accounts</a></div>
-		</div>
-
+		<ul id="user_list" name="user_list"></ul>
+        	<ul id="option_list" name="option_list">
+			<li id="livejournal_logout" class="nohover">Log out</li>
+			<li class="options nohover"><a href="#" id="options_page_link">Manage Accounts</a></li>
+		</ul>
 </body></html>

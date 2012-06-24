@@ -3,7 +3,6 @@
 var LJlogin_sites = [
 	{
 		name: 'LiveJournal',
-		nickname: 'LJ',
 		domain: '.livejournal.com',
 		cookieurl: 'http://www.livejournal.com/',
 		cookiename: 'ljmastersession',
@@ -11,7 +10,6 @@ var LJlogin_sites = [
 	},
 	{
 		name: 'InsaneJournal',
-		nickname: 'IJ',
 		domain: '.insanejournal.com',
 		cookieurl: 'http://www.insanejournal.com/',
 		cookiename: 'ljmastersession',
@@ -19,7 +17,6 @@ var LJlogin_sites = [
 	},
 	{
 		name: 'JournalFen',
-		nickname: 'JF',
 		domain: '.journalfen.net',
 		cookieurl: 'http://www.journalfen.net/',
 		cookiename: 'ljsession',
@@ -27,7 +24,6 @@ var LJlogin_sites = [
 	},
 	{
 		name: 'DeadJournal',
-		nickname: 'DJ',
 		domain: '.deadjournal.com',
 		cookieurl: 'http://www.deadjournal.com/',
 		cookiename: 'ljmastersession',
@@ -35,7 +31,6 @@ var LJlogin_sites = [
 	},
 	{
 		name: 'Scribbld',
-		nickname: 'Scr',
 		domain: '.scribbld.com',
 		cookieurl: 'http://www.scribbld.com/',
 		cookiename: 'ljmastersession',
@@ -43,7 +38,6 @@ var LJlogin_sites = [
 	},
 	{
 		name: 'Dreamwidth',
-		nickname: 'DW',
 		domain: '.dreamwidth.org',
 		cookieurl: 'http://www.dreamwidth.org/',
 		cookiename: 'ljmastersession',
@@ -51,7 +45,6 @@ var LJlogin_sites = [
 	},
 	{
 		name: 'Inksome',
-		nickname: 'Ink',
 		domain: '.inksome.com',
 		cookieurl: 'http://www.inksome.com/',
 		cookiename: 'ljmastersession',
