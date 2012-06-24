@@ -66,6 +66,7 @@ ul li {
 }
 #option_list li {
 	cursor: pointer;
+	font-weight: normal;
 }
 #option_list li:hover {
 	background-color: #ddd;
