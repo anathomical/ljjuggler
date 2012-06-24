@@ -1,0 +1,161 @@
+body {
+	background-color: #e9eaeb;
+	font: normal 100% Verdana, Helvetica, sans-serif;
+	color: #000;
+	margin: auto;
+	padding: 0;
+	text-align: center;
+	overflow-y: auto;
+	overflow-x: hidden;
+	list-style-type: none;
+	width: 100%;
+}
+.wrapper {
+	background-color: #fdfdfd;
+	text-align: left;
+	padding: 5px 10px 5px 10px;
+	width: auto;
+	border: 1px solid #c9cacb;
+	border-radius: 10px;
+	display: inline-block;
+	position: relative;
+}
+a {
+	color: inherit;
+	text-decoration: none;
+}
+p {
+	clear: both;
+	color: #666;
+	font-size: 0.6em;
+	text-align: center;
+}
+p a:hover {
+	text-decoration: underline;
+}
+ul {
+	padding: 0; margin: 0;
+}
+#option_list {
+	border-top: 1px solid #d9dadb;
+}
+ul li {
+	color: #333333;
+	list-style-type: none;
+	font-size: 0.9em;
+	font-weight: bold;
+	margin: 2px;
+	padding: 2px 0 2px 19px;
+}
+#user_list li {
+	background: url(/images/user.png) no-repeat 4px center;
+	cursor: pointer;
+}
+#user_list li:hover {
+	background: #ddd url(/images/user_hover.png) no-repeat 4px center;
+	color: #147a23;
+}
+#user_list li.select {
+	background: url(/images/user_selected.png) no-repeat 4px center;
+	font-weight: bold;
+	font-style: italic;
+	color: #217a86;
+}
+#user_list li.select:hover {
+	background-color: #ddd;
+}
+#option_list li {
+	cursor: pointer;
+	font-weight: normal;
+}
+#option_list li:hover {
+	background-color: #ddd;
+	color: #b30000;
+}
+.site-label {
+	color: #666;
+	cursor: default;
+	font-size: 0.8em;
+	padding: 4px;
+	text-align: center;
+}
+button {
+	background: url(/images/deleteaccount.png) no-repeat center center;
+	border: none;
+	cursor: pointer;
+	margin: 0 15px 0 4px;
+	padding: 0;
+	height: 14px;
+	width: 13px;
+	float: right;
+}
+button:hover {
+	background: url(/images/deleteaccount_hover.png) no-repeat center center;
+}
+label {
+	font: 0.7em Verdana, Helvetica, sans-serif;
+	line-height: 1em;
+	display: inline;
+	float: left;
+	text-align: right;
+	padding: 4px 10px 4px 0;
+	width: 80px;
+}
+#sitedropdown, #username, #password {
+	margin-top: 5px;
+	display: block;
+	border: 1px solid #7a7a7b;
+	background-color: #fafafa;
+	width: 120px;
+}
+#sitedropdown:hover, #username:hover, #password:hover {
+	border: 1px solid #000;
+	background-color: #f0f0f9;
+}
+#sitedropdown:focus, #username:focus, #password:focus {
+	border: 1px solid #000;
+	background-color: #f0f0f0;
+}
+.submit {
+	background: #e9eaeb url(/images/addaccount.png) no-repeat 6px 50%;
+	font-size: 0.8em;
+	cursor: pointer;
+	float: right;
+	margin: 15px 0 1.5em 0;
+	padding: 4px 6px 4px 26px;
+	border: 1px solid #c9cacb;
+	width: auto;
+}
+.submit:hover {
+	color: #147a23;
+	background: #f5f6f7 url(/images/addaccount_hover.png) no-repeat 6px 50%;
+	border-color: #d9dadb;
+}
+h1 {
+	font-size: 1.3em;
+	font-weight: normal;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+h2 {
+	font-size: 1em;
+	font-weight: normal;
+	font-style: italic;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+h3 {
+	padding-left: 18px;
+	font-size: 0.9em;
+	color: #217a86;
+	font-weight: normal;
+}
+hr {
+	width: 75%;
+	height: 1px;
+	border: 0;
+	background-color: #d9dadb;
+	margin: 1em auto;
+}

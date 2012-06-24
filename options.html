@@ -1,197 +1,32 @@
 <html>
 	<head>
-		<title>Account Juggler - Options</title>
+		<title>LJ Juggler - Options</title>
         
-        <style type="text/css">
-		body {
-			background-color: #999;
-			font: normal 16px Georgia, "Times New Roman", Times, serif;
-			margin: 0;	
-		}
-		#wrapper {
-			background-color: #fff;
-			margin: 2em auto;
-			padding: 5px 25px 25px 25px;
-			width: 267px;
-			-webkit-border-radius: 10px;
-			-moz-border-radius: 10px;
-			border-radius: 10px;
-			-webkit-box-shadow: 1px 1px 4px #000;
-			-moz-box-shadow: 1px 1px 4px #000;
-			box-shadow: 1px 1px 4px #000;
-		}
-		ul li {
-			background: url(images/user.png) no-repeat 0 50%;
-			list-style-type: none;
-			padding: 4px 0px 4px 20px;
-		}
-		label {
-			display: block;
-			float: left;
-			padding: 4px;
-			width: 100px;
-		}
-		select {
-			display: block;
-			padding: 4px;
-			width:100px;
-		}
-		button {
-			background: url(images/deleteaccount.png) no-repeat;
-			border: none;
-			cursor: pointer;
-			font: normal 16px Georgia, "Times New Roman", Times, serif;
-			height: 20px;
-			margin-left: 10px;
-			width: 21px;
-		}
-		.submit {
-			background: url(images/addaccount.png) no-repeat;
-			border: none;
-			cursor: pointer;
-			float: right;
-			height: 29px;
-			margin: 15px 0 0 0;
-			width: 139px;
-		}
-		h1 {
-			font-variant: small-caps;
-			font-weight: normal;
-			text-align: center;
-		}
-		h2, h3 {
-			color: #b30000;
-			font-style: italic;
-			font-weight: normal;
-		}
-		p.desc {
-			clear: both;
-			color: #666;
-			font: normal 11px Arial, Helvetica, sans-serif;
-			padding-top: 25px;
-			text-align: center;
-		}
-		a { color: #b30000; text-decoration: none; }
-		a:hover { color: #075a64; text-decoration: underline; }
-		</style>
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
         
 		<script type="text/javascript" src="js/md5.js"></script>
 		<script type="text/javascript" src="lj_site_definitions.js"></script>
-		<script type="text/javascript">
-function drawlist()
-{
-	chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
-	{
-		var account_list = new Array;
-		if(response.value) account_list = JSON.parse(response.value);
-		account_list.sort(accountsort);
-		document.getElementById("account-list").innerHTML = "";
-		
-		for(var i = 0; i < account_list.length; i++)
-		{
-			var account = account_list[i];
-			var next_account = document.createElement("li");
-			var delete_button = document.createElement("button");
-			delete_button.id = account.username;
-			delete_button.onclick = delete_clicker(account);
-			delete_button.innerHTML = "";
-			next_account.innerHTML = account.username + " (" + account.site_info.name + ")";
-			next_account.appendChild(delete_button);
-			document.getElementById("account-list").appendChild(next_account);
-		}
-		
-		document.getElementById("username").focus();
-	});
-}
-function delete_clicker (account)
-{
-	return function ()
-	{
-		if(confirm("Are you sure you want to delete the account " + account.username + " from LJ Juggler?")) delete_account(account.username);
-	};
-}
-function delete_account(username)
-{
-	chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
-	{
-		var account_list = JSON.parse(response.value);
-		for (var i = 0; account_list[i]; i++)
-		{
-			if (account_list[i].username == username)
-			{
-				account_list.splice(i, 1);
-				chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)});
-				break;
-			}
-		}
-		drawlist();
-	});
-}
-function save_new_account()
-{
-	var username = document.getElementById("username").value;
-	var password = md5(document.getElementById("password").value);
-	var site_info_index = document.getElementById("sitedropdown").value;
-	if(username && password)
-	{
-		chrome.extension.sendRequest({"command":"login","account":{"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]}}, function (response)
-		{
-			if(response.code == "ok")
-			{
-				var uid = response.uid;
-				chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
-				{
-					var account_list = [];
-					if(response.value) account_list = JSON.parse(response.value);
-					account_to_add = {"username":username,"password":password,"uid":uid,"site_info":LJlogin_sites[site_info_index]};
-					account_list.push(account_to_add);
-					chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
-				});
-			}
-			else alert("There was an error confirming the account " + username + ".  The error message received was: " + response.message);
-		});
-	}
-	document.getElementById("username").value = "";
-	document.getElementById("password").value = "";
-	return false;
-}
-function accountsort(account_one, account_two)
-{
-	if(account_one.username == account_two.username) return 0;
-	else if(account_one.username < account_two.username) return -1;
-	else if(account_one.username > account_two.username) return 1;
-}
-function initialize()
-{
-	for(var i = 0; i < LJlogin_sites.length; i++)
-	{
-		var site = LJlogin_sites[i];
-		var next_option = document.createElement("option");
-		next_option.value = i;
-		next_option.innerHTML = site.name;
-		document.getElementById("sitedropdown").appendChild(next_option);
-	}
-	drawlist();
-}
-		</script>
+		<script type="text/javascript" src="js/options.js"></script>
 	</head>
-	<body onLoad="initialize();">
+	<body onload="initialize();">
     
-    <div id="wrapper">
+    <div class="wrapper">
     
     	<h1>LJ Juggler</h1>
+    	<h2>Account Management</h2>
+    	<hr>
 		<h3>Accounts:</h3>
 		<ul id="account-list">
 		</ul>
 		<h3>Add an account:</h3>
-		<form onSubmit="return save_new_account();">
+		<form onsubmit="return save_new_account();">
 			<label>Site:</label> <select id="sitedropdown"></select>
-			<label>Username:</label> <input type="text" id="username"/><br/>
-			<label>Password:</label> <input type="password" id="password"/><br/>
-			<input type="submit" value="" class="submit">
+			<label>Username:</label> <input type="text" id="username">
+			<label>Password:</label> <input type="password" id="password">
+			<input type="submit" value="Add Account" class="submit">
 		</form>
-        <p class="desc">LJ Account Juggler: <a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Changelog</a> | <a href="http://metanomaly.livejournal.com">Interface</a></p>
-        
-     </div>
+		<hr>
+        <p class="desc"><a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Changelog</a> | <a href="http://mistletotem.dreamwidth.org/">CSS</a></p>
+	</div>
 	</body>
 </html>
