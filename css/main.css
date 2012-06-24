@@ -1,48 +1,82 @@
-// Options.css
 body {
 	background-color: #e9eaeb;
 	font: normal 100% Verdana, Helvetica, sans-serif;
-	margin: 1.5em auto;
+	color: #000;
+	margin: auto;
+	padding: 0;
 	text-align: center;
+	overflow-y: auto;
+	overflow-x: hidden;
+	list-style-type: none;
+	width: 100%;
 }
-#wrapper {
-	background-color: #fff;
+.wrapper {
+	background-color: #fdfdfd;
 	text-align: left;
-	padding: 1em 2em 0.5em 2em;
+	padding: 5px 10px 5px 10px;
 	width: auto;
 	border: 1px solid #c9cacb;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
 	border-radius: 10px;
 	display: inline-block;
 	position: relative;
 }
-ul { padding: 0; margin: 0; }
-ul li {
-	background: url(/images/user.png) no-repeat 15px center;
-	list-style-type: none;
-	font-size: 0.75em;
-	font-weight: bold;
-	margin: 2px;
-	padding: 2px 0 2px 30px;
+a {
+	color: inherit;
+	text-decoration: none;
 }
-div.site-label {
-	color: #888;
-	cursor: default;
-	font-size: 10px;
-	margin: 0;
-	padding: 4px;
+p {
+	clear: both;
+	color: #666;
+	font-size: 0.6em;
 	text-align: center;
 }
-.journal-site {
-	padding: 2px 0 0 15px;
-	margin: 0;
-	font-weight: normal;
-	font-size: 0.8em;
-	float: right;
+p a:hover {
+	text-decoration: underline;
 }
-ul li:hover {
-	background-color: #f5f6f7;
+ul {
+	padding: 0; margin: 0;
+}
+#option_list {
+	border-top: 1px solid #d9dadb;
+}
+ul li {
+	color: #333333;
+	list-style-type: none;
+	font-size: 0.9em;
+	font-weight: bold;
+	margin: 2px;
+	padding: 2px 0 2px 19px;
+}
+#user_list li {
+	background: url(/images/user.png) no-repeat 4px center;
+	cursor: pointer;
+}
+#user_list li:hover {
+	background: #ddd url(/images/user_hover.png) no-repeat 4px center;
+	color: #147a23;
+}
+#user_list li.select {
+	background: url(/images/user_selected.png) no-repeat 4px center;
+	font-weight: bold;
+	font-style: italic;
+	color: #217a86;
+}
+#user_list li.select:hover {
+	background-color: #ddd;
+}
+#option_list li {
+	cursor: pointer;
+}
+#option_list li:hover {
+	background-color: #ddd;
+	color: #b30000;
+}
+.site-label {
+	color: #666;
+	cursor: default;
+	font-size: 0.8em;
+	padding: 4px;
+	text-align: center;
 }
 button {
 	background: url(/images/deleteaccount.png) no-repeat center center;
@@ -56,22 +90,9 @@ button {
 }
 button:hover {
 	background: url(/images/deleteaccount_hover.png) no-repeat center center;
-	border: none;
-	cursor: pointer;
-	margin: 0 15px 0 4px;
-	padding: 0;
-	height: 14px;
-	width: 13px;
-	float: right;
-}
-select {
-	border: 1px solid #7a7a7b;
-	display: block;
-	padding: 4px;
-	width: 120px;
 }
 label {
-	font: 0.6em Verdana, Helvetica, sans-serif;
+	font: 0.7em Verdana, Helvetica, sans-serif;
 	line-height: 1em;
 	display: inline;
 	float: left;
@@ -79,20 +100,20 @@ label {
 	padding: 4px 10px 4px 0;
 	width: 80px;
 }
-#username, #password {
+#sitedropdown, #username, #password {
+	margin-top: 5px;
+	display: block;
 	border: 1px solid #7a7a7b;
 	background-color: #fafafa;
 	width: 120px;
 }
-#username:hover, #password:hover {
+#sitedropdown:hover, #username:hover, #password:hover {
 	border: 1px solid #000;
-	background-color: #fdfdfd;
-	width: 120px;
+	background-color: #f0f0f9;
 }
-#username:focus, #password:focus {
+#sitedropdown:focus, #username:focus, #password:focus {
 	border: 1px solid #000;
-	background-color: #fdfdfd;
-	width: 120px;
+	background-color: #f0f0f0;
 }
 .submit {
 	background: #e9eaeb url(/images/addaccount.png) no-repeat 6px 50%;
@@ -107,16 +128,7 @@ label {
 .submit:hover {
 	color: #147a23;
 	background: #f5f6f7 url(/images/addaccount_hover.png) no-repeat 6px 50%;
-	font-size: 0.8em;
-	cursor: pointer;
-	float: right;
-	margin: 15px 0 1.5em 0;
-	padding: 4px 6px 4px 26px;
-	border: 1px solid #d9dadb;
-}
-.submit:active {
-	background-color: #edeeef;
-	border: 1px solid #d5d6d7;
+	border-color: #d9dadb;
 }
 h1 {
 	font-size: 1.3em;
@@ -134,6 +146,7 @@ h2 {
 	padding: 0;
 }
 h3 {
+	padding-left: 18px;
 	font-size: 0.9em;
 	color: #217a86;
 	font-weight: normal;
@@ -145,105 +158,3 @@ hr {
 	background-color: #d9dadb;
 	margin: 1em auto;
 }
-p.desc {
-	clear: both;
-	color: #666;
-	font-size: 0.6em;
-	text-align: center;
-}
-a:link { color: #a20000; text-decoration: none; }
-a:visited { color: #a20000; text-decoration: none; }
-a:active { color: #f00; text-decoration: none; }
-a:hover { color: #000; text-decoration: none; }
-:focus { outline: 1px dotted #999; }
-
-// Popup.css
-body {
-	font: normal 100% Verdana, Helvetica, sans-serif;
-	background-color: #fff;
-	color: #000;
-	margin: 0;
-	padding: 0;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
-ul {
-	list-style-type: none;
-	padding-left: 0;
-}
-div#wrapper {
-	margin: 0;
-	padding: 0;
-	display: inline-block;
-}
-#user_list li.nohover {
-	background: url(images/user.png) no-repeat 4px center;
-	color: #333333;
-	font-size: 12px;
-	font-weight: bold;
-	cursor: pointer;
-	padding: 4px 6px 4px 19px;
-}
-#user_list li.hover {
-	background: #f5f6f7 url(images/user_hover.png) no-repeat 4px center;
-	color: #147a23;
-	font-size: 12px;
-	font-weight: bold;
-	cursor: pointer;
-	margin: 0;
-	padding: 4px 6px 4px 19px;
-}
-#user_list li.select-nohover {
-	background: url(images/user_selected.png) no-repeat 4px center;
-	font-size: 12px;
-	font-weight: bold;
-	font-style: italic;
-	color: #217a86;
-	cursor: default;
-	margin: 0;
-	padding: 4px 6px 4px 19px;
-}
-#user_list li.select-hover {
-	background: #f5f6f7 url(images/user_selected.png) no-repeat 4px center;
-	font-size: 12px;
-	font-weight: bold;
-	font-style: italic;
-	color: #217a86;
-	cursor: default;
-	margin: 0;
-	padding: 4px 6px 4px 19px;
-}
-#user_list .site-label {
-	color: #888;
-	cursor: default;
-	font-size: 10px;
-	margin: 0;
-	padding: 4px;
-	text-align: center;
-}
-#option_list li.nohover {
-	font-size: 12px;
-	margin: 4px 0 0 0;
-	padding: 8px 0 4px 16px;
-} 
-#option_list li.hover {
-	color: #b30000;
-	font-size: 12px;
-	cursor: pointer;
-	margin: 4px 0 0 0;
-	padding: 8px 0 4px 16px;
-}
-ul#option_list {
-	border-top: 1px solid #d9dadb;
-}
-div.options {
-	color: #666;
-	font-size: 12px;
-	margin: 0 0 0 0;
-	padding: 4px 16px 4px 16px;
-	white-space: nowrap;
-}
-a:link { color: #000; text-decoration: none; }
-a:visited { color: #000; text-decoration: none; }
-a:hover { color: #b30000; text-decoration: none; }
-:focus { outline: none; }
