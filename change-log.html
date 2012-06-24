@@ -9,6 +9,30 @@
 		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.
 		
 		
+		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-2-0.crx">Version 3.2.0</a></h3>
+			<p>User-facing</p>
+			<ul>
+				<li>
+					Major visual overhaul.  Most of the work was done by TK (http://teek.ca/).  This redesign focuses on readability/usability in a number of areas.
+					<ol>
+						<li>Size font in em units and remove full-width background images so that users can scale up the font in the browser settings for readability without the links becoming unreadable.</li>
+						<li>Make clickable objects navigable with a keyboard.  I <em>think</em> this will make it possible to use Juggler with a screen-reader.</li>
+						<li>Organize the Account Management page to look more like the Account Selection page so that it's easier to delete the accounts you want to delete.</li>
+						<li>Change default font to sans-serif for better spacing and readability.</li>
+						<li>De-clutter the interface to allow more accounts to be listed in the same amount of space.</li>
+					</ol>
+				</li>
+				<li>Feedback on these changes is certainly welcome.  This is doubly-true if you feel like they're really awful, or if you couldn't use it before and can now.</li>
+			</ul>
+			<p>Behind-the-scenes</p>
+			<ul>
+				<li>Move CSS and JS code into external files for cleaner compartmentalization.</li>
+				<li>Re-structure options.html to re-use the same structure as popup.html for listing accounts.</li>
+				<li>Use CSS :hover attributes for controlling hover visuals rather than the stupid, hacky JS that was in place.</li>
+				<li>Clean up some of the JS code to make it more readable.</li>
+				<li>Eliminate redundant CSS shared between options.html and popup.html to further unify their visual styles.</li>
+			</ul>
+	
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-1-2.crx">Version 3.1.2</a></h3>
 			<p>User-facing</p>
 			<ul>
