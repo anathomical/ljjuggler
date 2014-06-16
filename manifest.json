@@ -4,7 +4,10 @@
   "version":"3.3.0",
   "description":"A solution for LiveJournal account switching in Chrome",
   "options_page":"options.html",
-  "background_page":"background.html",
+  "background":
+  {
+	"page": "background.html"
+  },
   "icons":
   { 
     "48": "images/icon48.png",
@@ -14,7 +17,7 @@
   {
     "default_icon":"images/icon19.png",
 	"default_title":"LJ Juggler",
-	"popup":"popup.html"
+	"default_popup":"popup.html"
   },
   "permissions":
   [

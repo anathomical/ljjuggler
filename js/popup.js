@@ -70,7 +70,6 @@ window.onload = function()
 		var kill_me = document.getElementsByClassName('site-label');
 		if(kill_me.length < 2)
 			kill_me[0].parentNode.removeChild(kill_me[0]);
-		draw_ui_highlights("initialize", 0);
 	});
 
 	// Now attach some event handlers.

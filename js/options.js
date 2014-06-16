@@ -29,6 +29,18 @@ function drawlist()
 			document.getElementById("account-list").appendChild(next_account);
 		}
 		
+		document.getElementById("new_account").addEventListener('submit', function(event) {
+			event.preventDefault();
+			save_new_account();
+		});
+		
+		chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"login_action"}, function (response) {
+			document.getElementById("login_action").value = response.value;
+		});
+		document.getElementById("login_action").addEventListener('change', function(event) {
+			chrome.extension.sendRequest({"command":"localStorage","mode":"set","key":"login_action","value":event.target.value});
+		});
+		
 		document.getElementById("username").focus();
 	});
 }
@@ -104,3 +116,4 @@ function accountsort(account_one, account_two)
 	else if(account_one.username > account_two.username) return 1;
 	else return 0;
 }
+window.onload=function() { initialize(); };

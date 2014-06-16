@@ -8,7 +8,7 @@
 		<script type="text/javascript" src="lj_site_definitions.js"></script>
 		<script type="text/javascript" src="js/options.js"></script>
 	</head>
-	<body onload="initialize();">
+	<body>
     
     <div class="wrapper">
     
@@ -19,12 +19,20 @@
 		<ul id="account-list">
 		</ul>
 		<h3>Add an account:</h3>
-		<form onsubmit="return save_new_account();">
+		<form id="new_account">
 			<label>Site:</label> <select id="sitedropdown"></select>
 			<label>Username:</label> <input type="text" id="username">
 			<label>Password:</label> <input type="password" id="password">
 			<input type="submit" value="Add Account" class="submit">
 		</form>
+		<p>
+			Reload tabs on account change?
+			<select id="login_action">
+				<option value="">No</option>
+				<option value="current">Current Tab Only</option>
+				<option value="all">All Tabs</option>
+			</select>
+		</p>
 		<hr>
         <p class="desc"><a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Changelog</a> | <a href="http://mistletotem.dreamwidth.org/">CSS</a></p>
 	</div>
