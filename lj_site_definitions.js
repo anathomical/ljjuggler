@@ -37,6 +37,13 @@ var LJlogin_sites = [
 		interfaceurl: 'http://www.scribbld.com/interface/flat',
 	},
 	{
+		name: 'Scribbld.us',
+		domain: '.scribbld.us',
+		cookieurl: 'http://www.scribbld.us/',
+		cookiename: 'ljmastersession',
+		interfaceurl: 'http://www.scribbld.us/interface/flat',
+	},
+	{
 		name: 'Dreamwidth',
 		domain: '.dreamwidth.org',
 		cookieurl: 'http://www.dreamwidth.org/',

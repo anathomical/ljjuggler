@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name":"LJ Account Juggler",
-  "version":"3.4.0",
+  "version":"3.4.1",
   "description":"A solution for LiveJournal account switching in Chrome",
   "options_page":"options.html",
   "background":
@@ -33,6 +33,8 @@
 	"https://*.deadjournal.com/*",
 	"http://*.scribbld.com/*",
 	"https://*.scribbld.com/*",
+	"http://*.scribbld.us/*",
+	"https://*.scribbld.us/*",
 	"http://*.dreamwidth.org/*",
 	"https://*.dreamwidth.org/*",
 	"http://*.inksome.com/*",
