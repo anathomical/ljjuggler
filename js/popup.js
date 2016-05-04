@@ -3,12 +3,12 @@ function page_loaded()
 }
 function click_logout_div()
 {
-	chrome.extension.sendRequest({"command":"logout"});
+	browser.runtime.sendMessage({"command":"logout"});
 	window.close();
 }
 function click_this_user_div(this_account)
 {
-	chrome.extension.sendRequest({"command":"login","account":this_account});
+	browser.runtime.sendMessage({"command":"login","account":this_account});
 	window.close();
 }
 	
@@ -25,7 +25,7 @@ function generate_option(this_account)
 			click_this_user_div(this_account);
 		};
 	}(this_account);
-	chrome.cookies.get({"url":this_account.site_info.cookieurl,"name":this_account.site_info.cookiename}, function (cookie) {
+	browser.cookies.get({"url":this_account.site_info.cookieurl,"name":this_account.site_info.cookiename}, function (cookie) {
 		var saved_uid = cookie.value.split(":")[1];
 		if(saved_uid == this_account.uid)
 		{
@@ -45,7 +45,7 @@ function accountsort(account_one, account_two)
 window.onload = function()
 {
 	// First dynamically build the page.
-	chrome.extension.sendRequest({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+	browser.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 	{
 		var account_list = [];
 		if(response.value != undefined) account_list = JSON.parse(response.value);
@@ -77,7 +77,7 @@ window.onload = function()
 		click_logout_div();
 	}
 	document.getElementById('options_page_link').onclick = function() {
-		chrome.tabs.create({'url': chrome.extension.getURL('options.html')});
+		browser.tabs.create({'url': browser.extension.getURL('options.html')});
 	}
 
 }
