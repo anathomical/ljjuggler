@@ -1,7 +1,6 @@
 function page_loaded()
 {
-	update_check();
-	chrome.extension.onRequest.addListener(
+	browser.runtime.onMessage.addListener(
 		function(request, sender, sendResponse)
 		{
 			if(request.command == "logout")
@@ -9,7 +8,7 @@ function page_loaded()
 				console.log("Logging out...");
 				for(var i = 0; i < LJlogin_sites.length; i++)
 				{
-				chrome.cookies.get({"url":LJlogin_sites[i].cookieurl,"name":LJlogin_sites[i].cookiename}, function(cookie)
+				browser.cookies.get({"url":LJlogin_sites[i].cookieurl,"name":LJlogin_sites[i].cookiename}, function(cookie)
 					{
 						logout_this_cookie(cookie);
 					});
@@ -19,14 +18,14 @@ function page_loaded()
 			else if(request.command == "login")
 			{
 				console.log("Logging in as... " + request.account.username);
-				chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
+				browser.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
 					logout_this_cookie(cookie);
 					
 					// Due to LiveJournal.com's new system for cookies, we have to parse out the uid from the set cookie rather than from the response, which requires an override here.
 					if(request.account.site_info.name == "LiveJournal")
 					{
 						var response_to_send = parse_lj_response(loginas(request.account));
-						chrome.cookies.get({"url":request.account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
+						browser.cookies.get({"url":request.account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
 							console.log(cookie);
 							console.log(response_to_send);
 							response_to_send.uid = cookie.value.split(":")[1];
@@ -59,7 +58,7 @@ function page_loaded()
 				}
 			}
 		});
-		chrome.cookies.onChanged.addListener(function (changeInfo)
+		browser.cookies.onChanged.addListener(function (changeInfo)
 		{
 			if(!changeInfo.removed && changeInfo.cookie.name == "BMLschemepref" && changeInfo.cookie.session)
 			{
@@ -69,7 +68,7 @@ function page_loaded()
 				delete changeInfo.cookie.session;
 				changeInfo.cookie.expirationDate = (+new Date() / 1000) + (60*60*24*365);
 				changeInfo.cookie.url = "http" + (changeInfo.cookie.secure ? "s" : "") + "://" + changeInfo.cookie.domain.substring(1) + changeInfo.cookie.path;
-				chrome.cookies.set(changeInfo.cookie);
+				browser.cookies.set(changeInfo.cookie);
 			}			
 		});
 }
@@ -114,14 +113,14 @@ function loginas(this_account)
 	// Now let's see what we're supposed to do post-login, and then do that
 	console.log("RELOAD?");
 	if (localStorage["login_action"] == "current") {
-		chrome.tabs.getSelected(function(tab) {
-			if (new RegExp(this_account.site_info.domain).test(tab.url)) chrome.tabs.reload(tab.id);
+		browser.tabs.getSelected(function(tab) {
+			if (new RegExp(this_account.site_info.domain).test(tab.url)) browser.tabs.reload(tab.id);
 		});
 	}
 	else if (localStorage["login_action"] == "all") {
-		chrome.tabs.query({"url":"*://*" + this_account.site_info.domain + "/*"}, function(tabs) {
+		browser.tabs.query({"url":"*://*" + this_account.site_info.domain + "/*"}, function(tabs) {
 			tabs.forEach(function (tab) {
-				chrome.tabs.reload(tab.id);
+				browser.tabs.reload(tab.id);
 			});
 		});
 	}
@@ -136,7 +135,7 @@ function save_cookie_data(this_account, conn)
 		// We've hit /login.bml directly, so the cookies have now set themselves.  (All of them, not just the login ones, nothing breaks, but ugh is it inefficient.)
 
 		// We do need to manually extract the cookies so that we can get the user's uid.
-		chrome.cookies.get({"url":this_account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
+		browser.cookies.get({"url":this_account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
 			this_account.uid = cookie.value.split(":")[1];
 			update_account(this_account);
 		});
@@ -148,8 +147,8 @@ function save_cookie_data(this_account, conn)
 		var ljloggedin = ljsession.split(":")[1] + ":" + ljsession.split(":")[2];
 
 		var now = +new Date() / 1000;
-		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
-		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":ljloggedin, "expirationDate":(now + 60*60*24*365)});
+		browser.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+		browser.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":ljloggedin, "expirationDate":(now + 60*60*24*365)});
 		this_account.uid = ljsession.split(":")[1];
 		update_account(this_account);
 	}
@@ -162,7 +161,7 @@ function parse_lj_response(response_text)
 	var response_to_return = {};
 	if(lj_response_lines[0] == "errmsg") response_to_return.code = "error";
 	else response_to_return.code = "ok";
-	response_to_return.message = lj_response_lines[1];
+	response_to_return.request = lj_response_lines[1];
 	try
 	{
 		response_to_return.uid = lj_response_lines[1].split(":")[1];
@@ -196,9 +195,9 @@ function logout_this_cookie(cookie)
 			console.log("logout failure: " + e);
 		}
 		console.log("Deleting cookie...");
-		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
-		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
-		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
+		browser.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
+		browser.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
+		browser.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
 	}
 	else console.log("No cookie found, no need to log out.");
 }
@@ -218,93 +217,13 @@ function get_interface_url_from_cookie(cookie)
 function update_account(change_me)
 {
 	console.log("Updating account: " + change_me.username);
-	var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+        console.log("Local Storage: ", localStorage["lj_juggler_accounts"]);
+        var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
 	for(var i = 0; i < account_list.length; i++)
 	{
 		if(account_list[i].username == change_me.username && account_list[i].site_info == change_me.site_info) account_list[i] = change_me;
-	}
+	}	
 	localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
-}
-function update_check()
-{
-	var current_version = getVersion();
-	var old_version = localStorage["lj_juggler_version"];
-	console.log("checking version - current: " + current_version + " - stored: " + old_version);
-	if(old_version != current_version)
-	{
-		console.log("Versions don't match, executing updates...");
-		version_update(old_version, current_version);
-	}
-	else console.log("Data structures up to date");
-}
-function getVersion()
-{
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
-	xhr.send(null);
-	var manifest = JSON.parse(xhr.responseText);
-	return manifest.version;
-}
-function version_update(old_version, current_version)
-{
-	alert("LJ Juggler has been updated to the latest version: " + current_version);
-	localStorage["lj_juggler_version"] = current_version;
-	var version_history_list = [];
-	console.log("retrieve version history list from localStorage");
-	if(localStorage["version_history_list"] != undefined)
-	{
-		try
-		{
-			version_history_list = JSON.parse(localStorage["version_history_list"]);
-		}
-		catch (e)
-		{
-			version_history_list = [localStorage["version_history_list"]];
-		}
-	}
-	console.log("run updates in order");
-	if(!find_in_array(version_history_list, "2.0.0"))
-	{
-		console.log("2.0.0 updates in progress");
-			// Resave passwords as MD5 hashes for a slight security bump.
-		var account_list = [];
-		if(localStorage["lj_juggler_accounts"] != undefined) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-		console.log("update passwords to hashed versions");
-		for(var i = 0; i < account_list.length; i++)
-		{
-			var old_password = account_list[i].passsword;
-			account_list[i].password = md5(account_list[i].password);
-			console.log("replacing " + old_password + " with " + account_list[i].password);
-		}
-		console.log("push changes to localStorage");
-		localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
-
-		// We now use a cookie check to see who a use is logged in as.  So clean up the old data.
-		console.log("removing lastSelected from localStorage");
-		localStorage.removeItem("lastSelected");
-		
-		console.log("push version 2.0.0 into the version_history_list");
-		version_history_list.push("2.0.0");
-	}
-	if(!find_in_array(version_history_list, "3.0.0"))
-	{
-		console.log("3.0.0 updates in progress");
-			// All existing accounts must be with LiveJournal, not one of the clones, so attach the LiveJournal information to each account.
-		var account_list = [];
-		if(localStorage["lj_juggler_accounts"] != undefined) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-		console.log("attach site-info for LiveJournal to existing accounts.");
-		for(var i = 0; i < account_list.length; i++)
-		{
-			account_list[i].site_info = LJlogin_sites[0];
-		}
-		console.log("push changes to localStorage");
-		localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
-		
-		console.log("push version 3.0.0 into the version_history_list");
-		version_history_list.push("3.0.0");
-	}
-	console.log("updating version_history_list in localStorage: " + version_history_list);
-	localStorage["version_history_list"] = JSON.stringify(version_history_list);
 }
 function find_in_array(array, value)
 {
