@@ -1,0 +1,6 @@
+TO DO for Firefox port:
+
+- Finish porting (fix the JSON.parse error thrown by background.js when trying to add a new account)
+- Fix/update any other code that hasn't been fixed.
+- Update icons for Firefox (I could maybe try making a logo since I like to Photoshop)
+- See if adding support for Tumblr accounts is possible.
