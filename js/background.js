@@ -218,7 +218,12 @@ function update_account(change_me)
 {
 	console.log("Updating account: " + change_me.username);
         console.log("Local Storage: ", localStorage["lj_juggler_accounts"]);
-        var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+	var stored_account_data = localStorage["lj_juggler_accounts"];
+                if (stored_account_data) {
+                    var account_list = JSON.parse(stored_account_data);
+        }       else {
+                    var account_list = [];
+        }
 	for(var i = 0; i < account_list.length; i++)
 	{
 		if(account_list[i].username == change_me.username && account_list[i].site_info == change_me.site_info) account_list[i] = change_me;
