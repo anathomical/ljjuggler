@@ -67,9 +67,9 @@ window.onload = function()
 			document.getElementById("user_list").appendChild(next_option);
 		}
 		// If all the accounts are from a single site, we can actually remove the site label as extraneous.
-		var kill_me = document.getElementsByClassName('site-label');
-		if(kill_me.length < 2)
-			kill_me[0].parentNode.removeChild(kill_me[0]);
+//		var kill_me = document.getElementsByClassName('site-label');
+//		if(kill_me.length < 2)
+//			kill_me[0].parentNode.removeChild(kill_me[0]);
 	});
 
 	// Now attach some event handlers.
