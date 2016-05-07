@@ -1,7 +1,7 @@
 TO DO for Firefox port:
 
-- Finish porting (fix the JSON.parse error thrown by background.js when trying to add a new account)
+- Find workaround for popup resizing in Firefox until the Firefox bug is (https://bugzilla.mozilla.org/show_bug.cgi?id=1215025) is fixed.
 - Fix/update any other code that hasn't been fixed.
-- Update icons for Firefox (I could maybe try making a logo since I like to Photoshop)
+
 - See if adding support for Tumblr accounts is possible.
 - See about a Firefox mobile version.
