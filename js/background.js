@@ -218,8 +218,7 @@ function get_interface_url_from_cookie(cookie)
 function update_account(change_me)
 {
 	console.log("Updating account: " + change_me.username);
-        console.log("Local Storage: ", localStorage["lj_juggler_accounts"]);
-	var stored_account_data = localStorage["lj_juggler_accounts"];
+        var stored_account_data = localStorage["lj_juggler_accounts"];
                 if (stored_account_data) {
                     var account_list = JSON.parse(stored_account_data);
         }       else {
