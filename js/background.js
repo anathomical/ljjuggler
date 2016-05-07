@@ -38,6 +38,7 @@ function page_loaded()
 						sendResponse(response_to_send);
 					}
 				});
+				return true;
 			}
 			else if(request.command == "localStorage")
 			{
