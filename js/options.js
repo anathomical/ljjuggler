@@ -1,6 +1,6 @@
 function drawlist()
 {
-	browser.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+	chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 	{
 		var account_list = new Array;
 		if(response.value) account_list = JSON.parse(response.value);
@@ -34,12 +34,12 @@ function drawlist()
 			save_new_account();
 		});
 		
-		browser.runtime.sendMessage({"command":"localStorage","mode":"get","key":"login_action"}, function (response) {
+		chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"login_action"}, function (response) {
 			document.getElementById("login_action").value = response.value;
 		});
 		document.getElementById("login_action").addEventListener('change', function(event) {
 			
-                        browser.runtime.sendMessage({"command":"localStorage","mode":"set","key":"login_action","value":event.target.value});
+                        chrome.runtime.sendMessage({"command":"localStorage","mode":"set","key":"login_action","value":event.target.value});
 		});
 		
 		document.getElementById("username").focus();
@@ -54,7 +54,7 @@ function delete_clicker (account)
 }
 function delete_account(username)
 {
-	browser.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+	chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 	{
 		var account_list = JSON.parse(response.value);
 		for (var i = 0; account_list[i]; i++)
@@ -62,7 +62,7 @@ function delete_account(username)
 			if (account_list[i].username == username)
 			{
 				account_list.splice(i, 1);
-				browser.runtime.sendMessage({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)});
+				chrome.runtime.sendMessage({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)});
 				break;
 			}
 		}
@@ -76,18 +76,18 @@ function save_new_account()
 	var site_info_index = document.getElementById("sitedropdown").value;
 	if(username && password)
 	{
-		browser.runtime.sendMessage({"command":"login","account":{"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]}}, function (response)
+		chrome.runtime.sendMessage({"command":"login","account":{"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]}}, function (response)
 		{
 			if(response.code == "ok")
 			{
 				var uid = response.uid;
-				browser.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
+				chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 				{
 					var account_list = [];
 					if(response.value) account_list = JSON.parse(response.value);
 					account_to_add = {"username":username,"password":password,"uid":uid,"site_info":LJlogin_sites[site_info_index]};
 					account_list.push(account_to_add);
-					browser.runtime.sendMessage({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
+					chrome.runtime.sendMessage({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
 				});
 			}
 			else alert("There was an error confirming the account " + username + ".  The error message received was: " + response.message);
