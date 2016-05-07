@@ -1,6 +1,7 @@
 function page_loaded()
 {
-	browser.runtime.onMessage.addListener(
+//        update_check();
+	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse)
 		{
 			if(request.command == "logout")
@@ -8,7 +9,7 @@ function page_loaded()
 				console.log("Logging out...");
 				for(var i = 0; i < LJlogin_sites.length; i++)
 				{
-				browser.cookies.get({"url":LJlogin_sites[i].cookieurl,"name":LJlogin_sites[i].cookiename}, function(cookie)
+				chrome.cookies.get({"url":LJlogin_sites[i].cookieurl,"name":LJlogin_sites[i].cookiename}, function(cookie)
 					{
 						logout_this_cookie(cookie);
 					});
@@ -18,14 +19,14 @@ function page_loaded()
 			else if(request.command == "login")
 			{
 				console.log("Logging in as... " + request.account.username);
-				browser.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
+				chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
 					logout_this_cookie(cookie);
 					
 					// Due to LiveJournal.com's new system for cookies, we have to parse out the uid from the set cookie rather than from the response, which requires an override here.
 					if(request.account.site_info.name == "LiveJournal")
 					{
 						var response_to_send = parse_lj_response(loginas(request.account));
-						browser.cookies.get({"url":request.account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
+						chrome.cookies.get({"url":request.account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
 							console.log(cookie);
 							console.log(response_to_send);
 							response_to_send.uid = cookie.value.split(":")[1];
@@ -38,7 +39,7 @@ function page_loaded()
 						sendResponse(response_to_send);
 					}
 				});
-				return true;
+                                return true;
 			}
 			else if(request.command == "localStorage")
 			{
@@ -59,7 +60,7 @@ function page_loaded()
 				}
 			}
 		});
-		browser.cookies.onChanged.addListener(function (changeInfo)
+		chrome.cookies.onChanged.addListener(function (changeInfo)
 		{
 			if(!changeInfo.removed && changeInfo.cookie.name == "BMLschemepref" && changeInfo.cookie.session)
 			{
@@ -69,7 +70,7 @@ function page_loaded()
 				delete changeInfo.cookie.session;
 				changeInfo.cookie.expirationDate = (+new Date() / 1000) + (60*60*24*365);
 				changeInfo.cookie.url = "http" + (changeInfo.cookie.secure ? "s" : "") + "://" + changeInfo.cookie.domain.substring(1) + changeInfo.cookie.path;
-				browser.cookies.set(changeInfo.cookie);
+				chrome.cookies.set(changeInfo.cookie);
 			}			
 		});
 }
@@ -114,14 +115,14 @@ function loginas(this_account)
 	// Now let's see what we're supposed to do post-login, and then do that
 	console.log("RELOAD?");
 	if (localStorage["login_action"] == "current") {
-		browser.tabs.getSelected(function(tab) {
-			if (new RegExp(this_account.site_info.domain).test(tab.url)) browser.tabs.reload(tab.id);
-		});
-	}
+        chrome.tabs.query({active: true, currentWindow: true, "url":"*://*" + this_account.site_info.domain + "/*"}, function(tab) {
+                chrome.tabs.reload(tab.id);
+                });
+        }
 	else if (localStorage["login_action"] == "all") {
-		browser.tabs.query({"url":"*://*" + this_account.site_info.domain + "/*"}, function(tabs) {
+		chrome.tabs.query({"url":"*://*" + this_account.site_info.domain + "/*"}, function(tabs) {
 			tabs.forEach(function (tab) {
-				browser.tabs.reload(tab.id);
+				chrome.tabs.reload(tab.id);
 			});
 		});
 	}
@@ -136,7 +137,7 @@ function save_cookie_data(this_account, conn)
 		// We've hit /login.bml directly, so the cookies have now set themselves.  (All of them, not just the login ones, nothing breaks, but ugh is it inefficient.)
 
 		// We do need to manually extract the cookies so that we can get the user's uid.
-		browser.cookies.get({"url":this_account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
+		chrome.cookies.get({"url":this_account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
 			this_account.uid = cookie.value.split(":")[1];
 			update_account(this_account);
 		});
@@ -148,8 +149,8 @@ function save_cookie_data(this_account, conn)
 		var ljloggedin = ljsession.split(":")[1] + ":" + ljsession.split(":")[2];
 
 		var now = +new Date() / 1000;
-		browser.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
-		browser.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":ljloggedin, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":ljloggedin, "expirationDate":(now + 60*60*24*365)});
 		this_account.uid = ljsession.split(":")[1];
 		update_account(this_account);
 	}
@@ -196,9 +197,9 @@ function logout_this_cookie(cookie)
 			console.log("logout failure: " + e);
 		}
 		console.log("Deleting cookie...");
-		browser.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
-		browser.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
-		browser.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
+		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
+		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
+		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
 	}
 	else console.log("No cookie found, no need to log out.");
 }
@@ -223,22 +224,7 @@ function update_account(change_me)
                     var account_list = JSON.parse(stored_account_data);
         }       else {
                     var account_list = [];
-        }
-	for(var i = 0; i < account_list.length; i++)
-	{
-		if(account_list[i].username == change_me.username && account_list[i].site_info == change_me.site_info) account_list[i] = change_me;
-	}	
-	localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
-}
-function find_in_array(array, value)
-{
-	if(array)
-	{
-		for(var i = 0; i < array.length; i++)
-		{
-			if(value == array[i]) return true;
-		}
-	}
-	return false
+        }   
+        localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
 }
 window.onload=function() { page_loaded(); };
