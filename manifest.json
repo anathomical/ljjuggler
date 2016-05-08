@@ -16,8 +16,7 @@
     "applications": {
     "gecko": {
       "id": "ljjuggler@andontie.net",
-      "strict_min_version": "46.0",
-      "strict_max_version": "50.*"
+      "strict_min_version": "46.0"
     }
   },
   
