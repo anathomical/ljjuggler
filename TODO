@@ -1,7 +1,7 @@
 TO DO for Firefox port:
 
 - Find workaround for popup resizing in Firefox until the Firefox bug is (https://bugzilla.mozilla.org/show_bug.cgi?id=1215025) is fixed.
-- Fix/update any other code that hasn't been fixed.
+-- > Doesn't seem to be a workaround so this is a known issue. The popup is now a larger static height until the bug is fixed.
 
 - See if adding support for Tumblr accounts is possible.
 - See about a Firefox mobile version.
