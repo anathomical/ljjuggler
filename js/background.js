@@ -1,6 +1,5 @@
 function page_loaded()
 {
-//        update_check();
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse)
 		{
