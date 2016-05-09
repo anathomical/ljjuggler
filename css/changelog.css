@@ -1,0 +1,22 @@
+body {
+	background-color: #e9eaeb;
+	font: normal 100% Verdana, Helvetica, sans-serif;
+	color: #000;
+}
+.wrapper {
+       	background-color: #fdfdfd;
+	text-align: left;
+        font-size: 18px;
+	padding: 0px 20px 10px 20px;
+	width: 50%;
+        border: 1px solid #c9cacb;
+	border-radius: 10px;
+	display: inline-block;
+	list-style-type: none;
+}
+h1 {
+	font-weight: normal;
+        margin-top: 10px;
+        margin-bottom: 5px;
+	padding: 0;
+}
