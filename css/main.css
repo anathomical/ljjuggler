@@ -9,13 +9,15 @@ body {
 	overflow-x: hidden;
 	list-style-type: none;
 	width: 100%;
+/*Static height for Firefox popup until that damn bug is fixed:*/
+        height: 350px;
 }
 .wrapper {
 	background-color: #fdfdfd;
 	text-align: left;
 	padding: 5px 10px 5px 10px;
 	width: auto;
-	border: 1px solid #c9cacb;
+        border: 1px solid #c9cacb;
 	border-radius: 10px;
 	display: inline-block;
 	position: relative;
