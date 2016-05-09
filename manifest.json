@@ -1,8 +1,9 @@
 {
+
   "manifest_version": 2,
   "name":"LJ Account Juggler",
   "version":"4.0.0",
-  "description":"A port of the Chrome extension, this addon lets users easily switch between accounts on Dreamwidth, Livejournal, and InsaneJournal.",
+  "description":"A port of the Chrome extension, this addon lets users easily switch between accounts on LiveJournal-based websites.",
   "background":
   {
 	"page": "background.html"
@@ -30,12 +31,13 @@
   [
 	"tabs",
 	"cookies",
-	"storage",
 	"http://*.dreamwidth.org/*",
 	"https://*.dreamwidth.org/*",
 	"http://*.livejournal.com/*",
 	"https://*.livejournal.com/*",
 	"http://*.insanejournal.com/*",
-	"https://*.insanejournal.com/*"
+	"https://*.insanejournal.com/*",
+        "http://*.scribbld.com/*",
+	"https://*.scribbld.com/*"
   ]
 }
