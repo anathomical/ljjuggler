@@ -22,6 +22,7 @@ var LJlogin_sites = [
 		cookiename: 'ljmastersession',
 		interfaceurl: 'http://www.insanejournal.com/interface/flat',
 	},
+	{
 		name: 'Scribbld',
 		domain: '.scribbld.com',
 		cookieurl: 'http://www.scribbld.com/',
