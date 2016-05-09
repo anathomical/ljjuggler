@@ -1,12 +1,30 @@
 <html>
 	<head>
 		<title>LJ Juggler Change Log</title>
+		
+		<link rel="stylesheet" type="text/css" href="css/changelog.css" />
 	</head>
 	<body>
-		<p>LJ Juggler</p>
-		<p>A Google Chrome extension for switching between user accounts on LiveJournal.</p>
+
+		<center><h1>LJ Juggler</h1>
+                
+            <div class="wrapper">
+            
+                <center><p>A Google Chrome and Mozilla Firefox extension for switching between user accounts on LiveJournal-based websites.</p>
 		<p><a href="http://rushin-doll.net/lj-juggler/">http://rushin-doll.net/lj-juggler/</a></p>
-		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.
+		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.</center>
+		
+                <h3>Version 4.0.0 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="http://andontie.net/lj-juggler">Firefox</a></h3>
+			<p>User-facing</p>
+			<ul>
+                                <li>As GreatestJournal, Deadjournal, Scribbld.us, Inksome, and JournalFen.net are now dead they are no longer supported and have been removed from the options.</li>
+                                <li>KNOWN ISSUE for Firefox: Due to this <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1215025">this Firefox bug</a> the popup does not resize to fit your account list, so a static popup height has been added as a workaround until the bug is fixed.</li>
+			</ul>
+			<p>Behind-the-scenes</p>
+			<ul>
+				<li><b>First release of Mozilla Firefox port</b>, compatible with version 46.0 and above!</li>
+				<li>Updated some old code that was depreciated in Chrome and unsupported in Firefox, altered some of the code to so that it also worked in Firefox.</li>
+                        </ul>		
 		
 		<h3><a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Version 3.4.1</a></h3>
 			<p>User-facing</p>
@@ -25,7 +43,7 @@
 			<p>Behind-the-scenes</p>
 			<ul>
 				<li>The plumbing to support reloading, and to make sure we only reload the correct tabs.</li>
-				<li>Moving around anumber of pieces of code to bring the codebase more in line with Chrome's new security guidelines for extensions.</li>
+				<li>Moving around a number of pieces of code to bring the codebase more in line with Chrome's new security guidelines for extensions.</li>
 			</ul>
 		
 		<h3><a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Version 3.3.0</a></h3>
@@ -253,6 +271,7 @@
 				<li>Changed password storage to store hashes rather than plaintext for slightly better local security.</li>
 				<li>Shifted to cookie-based login and authentication (the same model used by ljlogin for Firefox).  Security bump, much more accurate at recognizing which account is logged in, and noticeable speed increase.</li>
 			</ul>
-
+                </div>
+        <p></p></center>
 	</body>
 </html>
