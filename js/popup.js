@@ -17,7 +17,7 @@ function generate_option(this_account)
 	var this_element = document.createElement("li");
 	this_element.setAttribute("class","nohover");
 	this_element.id = this_account.site_info.name + this_account.username;
-	this_element.innerHTML = '<a href="#' + this_account.site_info.name + '-' + this_account.username + '">' + this_account.username + '</a>';
+	this_element.textContent = this_account.username;
 	this_element.onclick = function (this_account)
 	{ 
 		return function ()
@@ -59,7 +59,7 @@ window.onload = function()
 			{
 				var this_header = document.createElement('div');
 				this_header.setAttribute('class','site-label');
-				this_header.innerHTML = account_list[i].site_info.name;
+				this_header.textContent = account_list[i].site_info.name;
 				document.getElementById('user_list').appendChild(this_header);
 				current_site = account_list[i].site_info.name;
 			}
@@ -71,7 +71,6 @@ window.onload = function()
 		if(kill_me.length < 2)
 			kill_me[0].parentNode.removeChild(kill_me[0]);
 	});
-
 	// Now attach some event handlers.
 	document.getElementById('livejournal_logout').onclick = function(evt) {
 		click_logout_div();
@@ -79,5 +78,4 @@ window.onload = function()
 	document.getElementById('options_page_link').onclick = function() {
 		chrome.tabs.create({'url': chrome.extension.getURL('options.html')});
 	}
-
 }

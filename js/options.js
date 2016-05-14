@@ -15,7 +15,7 @@ function drawlist()
 			{
 				var this_header = document.createElement('div');
 				this_header.setAttribute('class','site-label');
-				this_header.innerHTML = account_list[i].site_info.name;
+				this_header.textContent = account_list[i].site_info.name;
 				document.getElementById('account-list').appendChild(this_header);
 				current_site = account_list[i].site_info.name;
 			}
@@ -24,7 +24,7 @@ function drawlist()
 			var delete_button = document.createElement("button");
 			delete_button.id = account.username;
 			delete_button.onclick = delete_clicker(account);
-			next_account.innerHTML = account.username;
+			next_account.textContent = account.username;
 			next_account.appendChild(delete_button);
 			document.getElementById("account-list").appendChild(next_account);
 		}
@@ -104,7 +104,7 @@ function initialize()
 		var site = LJlogin_sites[i];
 		var next_option = document.createElement("option");
 		next_option.value = i;
-		next_option.innerHTML = site.name;
+		next_option.textContent = site.name;
 		document.getElementById("sitedropdown").appendChild(next_option);
 	}
 	drawlist();
