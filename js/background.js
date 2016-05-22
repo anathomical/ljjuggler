@@ -8,35 +8,19 @@ function page_loaded()
 				console.log("Logging out...");
 				for(var i = 0; i < LJlogin_sites.length; i++)
 				{
-				chrome.cookies.get({"url":LJlogin_sites[i].cookieurl,"name":LJlogin_sites[i].cookiename}, function(cookie)
+					chrome.cookies.get({"url":LJlogin_sites[i].cookieurl,"name":LJlogin_sites[i].cookiename}, function(cookie)
 					{
 						logout_this_cookie(cookie);
 					});
 				}
-				sendResponse({});
 			}
 			else if(request.command == "login")
 			{
 				console.log("Logging in as... " + request.account.username);
 				chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
-					logout_this_cookie(cookie);
-					
-					// Due to LiveJournal.com's new system for cookies, we have to parse out the uid from the set cookie rather than from the response, which requires an override here.
-					if(request.account.site_info.name == "LiveJournal")
-					{
-						var response_to_send = parse_lj_response(loginas(request.account));
-						chrome.cookies.get({"url":request.account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
-							console.log(cookie);
-							console.log(response_to_send);
-							response_to_send.uid = cookie.value.split(":")[1];
-							sendResponse(response_to_send);
-						});
-					}
-					else
-					{
-						var response_to_send = parse_lj_response(loginas(request.account));
-						sendResponse(response_to_send);
-					}
+					logout_this_cookie(cookie, function() {
+						loginas(request.account);
+					});
 				});
                                 return true;
 			}
@@ -73,42 +57,53 @@ function page_loaded()
 			}			
 		});
 }
-function getLJchallenge(interface_url)
+function getLJchallenge(interface_url, callback)
 {
 	console.log("Getting challenge from interface: " + interface_url);
 	var conn = new XMLHttpRequest();
 	var params = "mode=getchallenge";
-	conn.open("POST",interface_url,false);
+	conn.open("POST",interface_url,true);
 	conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	conn.onreadystatechange = function() {
+		if (conn.readyState == 4 && conn.status == 200) getLJchallenge_callback(callback, conn);
+	};
 	conn.send(params);
-	var challenge = conn.responseText.split("\n")[3];
-	return challenge;
 }
-function loginas(this_account)
+function getLJchallenge_callback(callback, conn) {
+	var challenge = conn.responseText.split("\n")[3];
+	if (callback) callback(challenge);
+}
+function loginas(this_account, callback)
 {
 	var conn = new XMLHttpRequest();
 	console.log("Beginning the login dance...");
-	var challenge = getLJchallenge(this_account.site_info.interfaceurl);
-	var response = md5(challenge + this_account.password);
-	var params = "mode=sessiongenerate" +
-				"&user=" + this_account.username +
-				"&auth_method=challenge" +
-				"&auth_challenge=" + challenge +
-				"&auth_response=" + response;
-	// Due to a change in LiveJournal.com's cookie handling, we have to do this hacky login in order to hit up cookie headers directly
-	if(this_account.site_info.name == 'LiveJournal')
-	{
-		params = "user=" + this_account.username +
-				"&chal=" + challenge +
-				"&response=" + response +
-				"&remember_me=1";
-		conn.open("POST", "http://www.livejournal.com/login.bml", false);
-	}
-	// All other implementations of LJ code seem to use the documented behavior, so this works just fine.
-	else
-		conn.open("POST", this_account.site_info.interfaceurl, false);
-	conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-	conn.send(params);
+	getLJchallenge(this_account.site_info.interfaceurl, function (challenge) {
+		var response = md5(challenge + this_account.password);
+		var params = "mode=sessiongenerate" +
+					"&user=" + this_account.username +
+					"&auth_method=challenge" +
+					"&auth_challenge=" + challenge +
+					"&auth_response=" + response;
+		// Due to a change in LiveJournal.com's cookie handling, we have to do this hacky login in order to hit up cookie headers directly
+		if(this_account.site_info.name == 'LiveJournal')
+		{
+			params = "user=" + this_account.username +
+					"&chal=" + challenge +
+					"&response=" + response +
+					"&remember_me=1";
+			conn.open("POST", "http://www.livejournal.com/login.bml", true);
+		}
+		// All other implementations of LJ code seem to use the documented behavior, so this works just fine.
+		else
+			conn.open("POST", this_account.site_info.interfaceurl, true);
+		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		conn.onreadystatechange = function() {
+			if (conn.readyState == 4 && conn.status == 200) loginas_callback(this_account, callback, conn);
+		};
+		conn.send(params);
+	});
+}
+function loginas_callback (this_account, callback, conn) {
 	console.log("Login negotiations completed.  Saving session data.");
 	
 	// Now let's see what we're supposed to do post-login, and then do that
@@ -126,7 +121,8 @@ function loginas(this_account)
 		});
 	}
 	
-	return save_cookie_data(this_account, conn);
+	save_cookie_data(this_account, conn);
+	if (callback) callback(conn);
 }
 function save_cookie_data(this_account, conn)
 {
@@ -153,7 +149,6 @@ function save_cookie_data(this_account, conn)
 		this_account.uid = ljsession.split(":")[1];
 		update_account(this_account);
 	}
-	return conn.responseText;
 }
 function parse_lj_response(response_text)
 {
@@ -173,7 +168,7 @@ function parse_lj_response(response_text)
 	}
 	return response_to_return;
 }
-function logout_this_cookie(cookie)
+function logout_this_cookie(cookie, callback)
 {
 	if(cookie != undefined)
 	{
@@ -186,21 +181,31 @@ function logout_this_cookie(cookie)
 			var params = "mode=sessionexpire" +
 						"&auth_method=cookie" +
 						"&expire_id_" + sessid + "=1";
-			conn.open("POST", get_interface_url_from_cookie(cookie),false);
+			conn.open("POST", get_interface_url_from_cookie(cookie),true);
 			conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			conn.setRequestHeader("X-LJ-Auth","cookie");
+			conn.onreadystatechange = function() {
+				if (conn.readyState == 4 && conn.status == 200) logout_this_cookie_callback(cookie, callback, conn);
+			};
 			conn.send(params);
 		}
 		catch (e)
 		{
 			console.log("logout failure: " + e);
 		}
-		console.log("Deleting cookie...");
-		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
-		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
-		chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
 	}
-	else console.log("No cookie found, no need to log out.");
+	else {
+		console.log("No cookie found, no need to log out.");
+		if (callback) callback();
+	}
+}
+function logout_this_cookie_callback(cookie, callback, conn) {
+	console.log("Deleting cookie...");
+	chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
+	chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
+	chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
+	if (callback) callback(conn);
+
 }
 function get_interface_url_from_cookie(cookie)
 {
@@ -208,7 +213,7 @@ function get_interface_url_from_cookie(cookie)
 	for(var i = 0; i < LJlogin_sites.length; i++)
 	{
 		console.log("Checking " + cookie.domain + " against " + LJlogin_sites[i].domain);
-		if(cookie.domain == LJlogin_sites[i].domain)
+		if(cookie.domain.indexOf(LJlogin_sites[i].domain) > -1)
 		{
 			return LJlogin_sites[i].interfaceurl;
 		}
