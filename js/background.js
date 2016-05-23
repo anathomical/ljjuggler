@@ -26,11 +26,14 @@ function page_loaded()
 									sendResponse(split_response_text[1]);
 								}
 								else {
-									account_to_add = {"username":request.account.username,"password":request.account.password,"uid":response.uid,"site_info":request.account.site_info};
-									var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
-									account_list.push(account_to_add);
-									localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
-									sendResponse("ok");
+									chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function (cookie) {
+										var uid = cookie.value.split(":")[1];
+										account_to_add = {"username":request.account.username,"password":request.account.password,"uid":uid,"site_info":request.account.site_info};
+										var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+										account_list.push(account_to_add);
+										localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
+										sendResponse("ok");
+									});
 								}
 							}
 						});
