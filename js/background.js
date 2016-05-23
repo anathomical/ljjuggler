@@ -14,12 +14,26 @@ function page_loaded()
 					});
 				}
 			}
-			else if(request.command == "login")
+			else if(request.command == "login" || request.command == "newAccount")
 			{
 				console.log("Logging in as... " + request.account.username);
 				chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
 					logout_this_cookie(cookie, function() {
-						loginas(request.account);
+						loginas(request.account, function (response) {
+							if (request.command == "newAccount") {
+								var split_response_text = response.responseText.split("\n");
+								if (split_response_text[0] == "errmsg") {
+									sendResponse(split_response_text[1]);
+								}
+								else {
+									account_to_add = {"username":request.account.username,"password":request.account.password,"uid":response.uid,"site_info":request.account.site_info};
+									var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+									account_list.push(account_to_add);
+									localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
+									sendResponse("ok");
+								}
+							}
+						});
 					});
 				});
                                 return true;
