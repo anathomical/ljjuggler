@@ -206,12 +206,13 @@ function logout_this_cookie(cookie, callback)
 		catch (e)
 		{
 			console.log("logout failure: " + e);
+			if (callback) callback();
 		}
 	}
 	else {
 		console.log("No cookie found, no need to log out.");
+		if (callback) callback();
 	}
-	if (callback) callback();
 }
 function logout_this_cookie_callback(cookie, callback, conn) {
 	console.log("Deleting cookie...");
