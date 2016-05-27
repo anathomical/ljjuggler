@@ -265,13 +265,14 @@ function update_check()
 }
 function getVersion(callback)
 {
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', chrome.extension.getURL('manifest.json'), true);
-	xhr.onreadystatechange = function(resp) {
-		var manifest = JSON.parse(resp.responseText);
+	var conn = new XMLHttpRequest();
+	conn.open('GET', chrome.extension.getURL('manifest.json'), true);
+	conn.onreadystatechange = function() {
+		console.log(conn);
+		var manifest = JSON.parse(conn.responseText);
 		if (conn.readyState == 4 && conn.status == 200 && callback) callback(manifest.version);
 	};
-	xhr.send(null);
+	conn.send(null);
 }
 function version_update(old_version, current_version)
 {
