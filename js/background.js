@@ -267,8 +267,8 @@ function getVersion(callback)
 {
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', chrome.extension.getURL('manifest.json'), true);
-	xhr.onreadystatechange = function() {
-		var manifest = JSON.parse(xhr.responseText);
+	xhr.onreadystatechange = function(resp) {
+		var manifest = JSON.parse(resp.responseText);
 		if (conn.readyState == 4 && conn.status == 200 && callback) callback(manifest.version);
 	};
 	xhr.send(null);
