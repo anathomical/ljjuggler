@@ -252,23 +252,26 @@ function update_account(change_me)
 }
 function update_check()
 {
-	var current_version = getVersion();
-	var old_version = localStorage["lj_juggler_version"];
-	console.log("checking version - current: " + current_version + " - stored: " + old_version);
-	if(old_version != current_version)
-	{
-		console.log("Versions don't match, executing updates...");
-		version_update(old_version, current_version);
-	}
-	else console.log("Data structures up to date");
+	var current_version = getVersion(function (current_version) {
+		var old_version = localStorage["lj_juggler_version"];
+		console.log("checking version - current: " + current_version + " - stored: " + old_version);
+		if(old_version != current_version)
+		{
+			console.log("Versions don't match, executing updates...");
+			version_update(old_version, current_version);
+		}
+		else console.log("Data structures up to date");
+	});
 }
-function getVersion()
+function getVersion(callback)
 {
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
+	xhr.open('GET', chrome.extension.getURL('manifest.json'), true);
+	xhr.onreadystatechange = function() {
+		var manifest = JSON.parse(xhr.responseText);
+		if (conn.readyState == 4 && conn.status == 200 && callback) callback(manifest.version);
+	};
 	xhr.send(null);
-	var manifest = JSON.parse(xhr.responseText);
-	return manifest.version;
 }
 function version_update(old_version, current_version)
 {
