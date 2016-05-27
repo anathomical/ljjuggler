@@ -268,11 +268,13 @@ function getVersion(callback)
 	var conn = new XMLHttpRequest();
 	conn.open('GET', chrome.extension.getURL('manifest.json'), true);
 	conn.onreadystatechange = function() {
-		console.log(conn);
-		var manifest = JSON.parse(conn.responseText);
-		if (conn.readyState == 4 && conn.status == 200 && callback) callback(manifest.version);
+		if (conn.readyState == 4 && conn.status == 200 && callback) getVersion_callback(callback, conn);
 	};
 	conn.send(null);
+}
+function getVersion_callback(callback, conn) {
+	var manifest = JSON.parse(conn.response);
+	callback(manifest.version);
 }
 function version_update(old_version, current_version)
 {
