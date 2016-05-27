@@ -1,5 +1,6 @@
 function page_loaded()
 {
+	update_check();
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse)
 		{
@@ -248,5 +249,97 @@ function update_account(change_me)
                     var account_list = [];
         }   
         localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
+}
+function update_check()
+{
+	var current_version = getVersion();
+	var old_version = localStorage["lj_juggler_version"];
+	console.log("checking version - current: " + current_version + " - stored: " + old_version);
+	if(old_version != current_version)
+	{
+		console.log("Versions don't match, executing updates...");
+		version_update(old_version, current_version);
+	}
+	else console.log("Data structures up to date");
+}
+function getVersion()
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', chrome.extension.getURL('manifest.json'), false);
+	xhr.send(null);
+	var manifest = JSON.parse(xhr.responseText);
+	return manifest.version;
+}
+function version_update(old_version, current_version)
+{
+	chrome.tabs.create({'url': "http://rushin-doll.net/lj-juggler/change-log.html"});
+	localStorage["lj_juggler_version"] = current_version;
+	var version_history_list = [];
+	console.log("retrieve version history list from localStorage");
+	if(localStorage["version_history_list"] != undefined)
+	{
+		try
+		{
+			version_history_list = JSON.parse(localStorage["version_history_list"]);
+		}
+		catch (e)
+		{
+			version_history_list = [localStorage["version_history_list"]];
+		}
+	}
+	console.log("run updates in order");
+	if(!find_in_array(version_history_list, "2.0.0"))
+	{
+		console.log("2.0.0 updates in progress");
+			// Resave passwords as MD5 hashes for a slight security bump.
+		var account_list = [];
+		if(localStorage["lj_juggler_accounts"] != undefined) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+		console.log("update passwords to hashed versions");
+		for(var i = 0; i < account_list.length; i++)
+		{
+			var old_password = account_list[i].passsword;
+			account_list[i].password = md5(account_list[i].password);
+			console.log("replacing " + old_password + " with " + account_list[i].password);
+		}
+		console.log("push changes to localStorage");
+		localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
+
+		// We now use a cookie check to see who a use is logged in as.  So clean up the old data.
+		console.log("removing lastSelected from localStorage");
+		localStorage.removeItem("lastSelected");
+
+		console.log("push version 2.0.0 into the version_history_list");
+		version_history_list.push("2.0.0");
+	}
+	if(!find_in_array(version_history_list, "3.0.0"))
+	{
+		console.log("3.0.0 updates in progress");
+			// All existing accounts must be with LiveJournal, not one of the clones, so attach the LiveJournal information to each account.
+		var account_list = [];
+		if(localStorage["lj_juggler_accounts"] != undefined) account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
+		console.log("attach site-info for LiveJournal to existing accounts.");
+		for(var i = 0; i < account_list.length; i++)
+		{
+			account_list[i].site_info = LJlogin_sites[0];
+		}
+		console.log("push changes to localStorage");
+		localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
+
+		console.log("push version 3.0.0 into the version_history_list");
+		version_history_list.push("3.0.0");
+	}
+	console.log("updating version_history_list in localStorage: " + version_history_list);
+	localStorage["version_history_list"] = JSON.stringify(version_history_list);
+}
+function find_in_array(array, value)
+{
+	if(array)
+	{
+		for(var i = 0; i < array.length; i++)
+		{
+			if(value == array[i]) return true;
+		}
+	}
+	return false
 }
 window.onload=function() { page_loaded(); };
