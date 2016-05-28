@@ -14,16 +14,18 @@
 		<p><a href="http://rushin-doll.net/lj-juggler/">http://rushin-doll.net/lj-juggler/</a></p>
 		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.</center>
 		
-                <h3>Version 4.0.0 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="http://andontie.net/lj-juggler">Firefox</a></h3>
+                <h3>Version 4.0.1 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
 			<p>User-facing</p>
 			<ul>
-                                <li>As GreatestJournal, Deadjournal, Scribbld.us, Inksome, and JournalFen.net are now dead they are no longer supported and have been removed from the options.</li>
-                                <li>KNOWN ISSUE for Firefox: Due to this <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1215025">this Firefox bug</a> the popup does not resize to fit your account list, so a static popup height has been added as a workaround until the bug is fixed.</li>
+                                <li>Removed GreatestJournal, Deadjournal, Scribbld.us, Inksome, and JournalFen.net from the extension since they don't really exist anymore.</li>
+                                <li>Hard-coded the height of the journal selection pop-up for Firefox.  Due to <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1215025">this Firefox bug</a> the popup does not resize to fit your account list, so a static popup height has been added as a workaround until the bug is fixed.  This should not affect Chrome users.</li>
+				<li>When LJ Juggler updates to a new version, instead of having an alert pop-up, a new tab will now be opened to this change-log page.</li>
 			</ul>
 			<p>Behind-the-scenes</p>
 			<ul>
-				<li><b>First release of Mozilla Firefox port</b>, compatible with version 46.0 and above!</li>
-				<li>Updated some old code that was depreciated in Chrome and unsupported in Firefox, altered some of the code to so that it also worked in Firefox.</li>
+				<li><strong>First release of Mozilla Firefox port</strong>, compatible with version 46.0 and above!  Thanks to the huge effort put in by Holly (<a href="http://frau_kali.dreamwidth.org">http://frau_kali.dreamwidth.org</a>) to make this happen.</li>
+				<li>As Mozilla moves to adupt the Chrome method for building extensions, we've been able to make updates to the extension code to make it work on both platforms, so we've refactored a ton of API calls from deprecated ones to the new forms that are supported in both Chrome and Firefox.</li>
+				<li>Refactored all of our AJAX calls to use asynchronous callback patterns instead of the old synchronous calls we had in place.</li>
                         </ul>		
 		
 		<h3><a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Version 3.4.1</a></h3>
