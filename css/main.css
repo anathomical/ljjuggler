@@ -29,6 +29,8 @@ body {
 	border-radius: 10px;
 	display: inline-block;
 	position: relative;
+/*Static height for popup until that damn Firefox bug is fixed*/
+        height: 350px;
 }
 a {
 	color: inherit;
