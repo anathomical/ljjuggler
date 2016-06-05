@@ -28,6 +28,10 @@ function page_loaded()
 								}
 								else {
 									chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function (cookie) {
+										// If we don't have a login cookie, then something must have gone wrong
+										if (!cookie) {
+											return sendResponse("errmsg");
+										}
 										var uid = cookie.value.split(":")[1];
 										account_to_add = {"username":request.account.username,"password":request.account.password,"uid":uid,"site_info":request.account.site_info};
 										var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
@@ -151,8 +155,10 @@ function save_cookie_data(this_account, conn)
 
 		// We do need to manually extract the cookies so that we can get the user's uid.
 		chrome.cookies.get({"url":this_account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
-			this_account.uid = cookie.value.split(":")[1];
-			update_account(this_account);
+			if (cookie) {
+				this_account.uid = cookie.value.split(":")[1];
+				update_account(this_account);
+			}
 		});
 	}
 	else
