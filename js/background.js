@@ -174,24 +174,6 @@ function save_cookie_data(this_account, conn)
 		update_account(this_account);
 	}
 }
-function parse_lj_response(response_text)
-{
-	console.log("Parsing response from LJ to pass back to the calling page...");
-	var lj_response_lines = response_text.split("\n");
-	var response_to_return = {};
-	if(lj_response_lines[0] == "errmsg") response_to_return.code = "error";
-	else response_to_return.code = "ok";
-	response_to_return.request = lj_response_lines[1];
-	try
-	{
-		response_to_return.uid = lj_response_lines[1].split(":")[1];
-	}
-	catch (e)
-	{
-		response_to_return.uid = "";
-	}
-	return response_to_return;
-}
 function logout_this_cookie(cookie, callback)
 {
 	if(cookie != undefined)
