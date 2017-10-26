@@ -4,16 +4,16 @@ var LJlogin_sites = [
 	{
 		name: 'Dreamwidth',
 		domain: '.dreamwidth.org',
-		cookieurl: 'http://www.dreamwidth.org/',
+		cookieurl: 'https://www.dreamwidth.org/',
 		cookiename: 'ljmastersession',
-		interfaceurl: 'http://www.dreamwidth.org/interface/flat',
+		interfaceurl: 'https://www.dreamwidth.org/interface/flat',
 	},
 	{
 		name: 'LiveJournal',
 		domain: '.livejournal.com',
-		cookieurl: 'http://www.livejournal.com/',
+		cookieurl: 'https://www.livejournal.com/',
 		cookiename: 'ljmastersession',
-		interfaceurl: 'http://www.livejournal.com/interface/flat',
+		interfaceurl: 'https://www.livejournal.com/interface/flat',
 	},
 	{
 		name: 'InsaneJournal',
