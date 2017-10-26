@@ -77,5 +77,6 @@ window.onload = function()
 	}
 	document.getElementById('options_page_link').onclick = function() {
 		chrome.tabs.create({'url': chrome.extension.getURL('options.html')});
+		window.close();
 	}
 }

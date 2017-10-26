@@ -76,21 +76,15 @@ function save_new_account()
 	var site_info_index = document.getElementById("sitedropdown").value;
 	if(username && password)
 	{
-		chrome.runtime.sendMessage({"command":"login","account":{"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]}}, function (response)
+		chrome.runtime.sendMessage({"command":"newAccount","account":{"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]}}, function (response)
 		{
-			if(response.code == "ok")
+			if(response == "ok")
 			{
-				var uid = response.uid;
-				chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
-				{
-					var account_list = [];
-					if(response.value) account_list = JSON.parse(response.value);
-					account_to_add = {"username":username,"password":password,"uid":uid,"site_info":LJlogin_sites[site_info_index]};
-					account_list.push(account_to_add);
-					chrome.runtime.sendMessage({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":JSON.stringify(account_list)}, function (response) { drawlist(); });
-				});
+				drawlist();
 			}
-			else alert("There was an error confirming the account " + username + ".  The error message received was: " + response.message);
+			else {
+				alert("There was an error confirming the account " + username + ".  This is usually caused by a typo in username or password, or picking the wrong site in the dropdown.");
+			}
 		});
 	}
 	document.getElementById("username").value = "";
