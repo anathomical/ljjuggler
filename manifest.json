@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name":"LJ Account Juggler",
-  "version":"4.0.1",
+  "version":"4.0.3",
   "description":"A port of the Chrome extension, this addon lets users easily switch between accounts on LiveJournal-based websites.",
   "background":
   {
