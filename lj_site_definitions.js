@@ -30,3 +30,10 @@ var LJlogin_sites = [
 		interfaceurl: 'http://www.scribbld.com/interface/flat',
 	}
 ];
+
+// Build a key-based look-up for the above data
+
+var LJlogin_keys = {};
+for (var i = 0; i < LJlogin_sites.length; i++) {
+	LJlogin_keys[LJlogin_sites[i].name] = LJlogin_sites[i];
+}
