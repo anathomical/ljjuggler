@@ -13,14 +13,6 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-  
-    "applications": {
-    "gecko": {
-      "id": "ljjuggler@andontie.net",
-      "strict_min_version": "48.0"
-    }
-  },
-  
   "browser_action":
   {
     "default_icon":"images/icon19.png",
