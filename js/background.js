@@ -17,8 +17,9 @@ function page_loaded()
 			}
 			else if(request.command == "login" || request.command == "newAccount")
 			{
+				var site_info = get_config_site_info(request.account.site_info);
 				console.log("Logging in as... " + request.account.username);
-				chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function(cookie) {
+				chrome.cookies.get({"url":site_info.cookieurl,"name":site_info.cookiename}, function(cookie) {
 					logout_this_cookie(cookie, function() {
 						loginas(request.account, function (response) {
 							if (request.command == "newAccount") {
@@ -27,13 +28,13 @@ function page_loaded()
 									sendResponse(split_response_text[1]);
 								}
 								else {
-									chrome.cookies.get({"url":request.account.site_info.cookieurl,"name":request.account.site_info.cookiename}, function (cookie) {
+									chrome.cookies.get({"url":site_info.cookieurl,"name":site_info.cookiename}, function (cookie) {
 										// If we don't have a login cookie, then something must have gone wrong
 										if (!cookie) {
 											return sendResponse("errmsg");
 										}
 										var uid = cookie.value.split(":")[1];
-										account_to_add = {"username":request.account.username,"password":request.account.password,"uid":uid,"site_info":request.account.site_info};
+										account_to_add = {"username":request.account.username,"password":request.account.password,"uid":uid,"site_info":site_info};
 										var account_list = JSON.parse(localStorage["lj_juggler_accounts"]);
 										account_list.push(account_to_add);
 										localStorage["lj_juggler_accounts"] = JSON.stringify(account_list);
@@ -97,9 +98,10 @@ function getLJchallenge_callback(callback, conn) {
 }
 function loginas(this_account, callback)
 {
+	var site_info = get_config_site_info(this_account.site_info);
 	var conn = new XMLHttpRequest();
 	console.log("Beginning the login dance...");
-	getLJchallenge(this_account.site_info.interfaceurl, function (challenge) {
+	getLJchallenge(site_info.interfaceurl, function (challenge) {
 		var response = md5(challenge + this_account.password);
 		var params = "mode=sessiongenerate" +
 					"&user=" + this_account.username +
@@ -107,7 +109,7 @@ function loginas(this_account, callback)
 					"&auth_challenge=" + challenge +
 					"&auth_response=" + response;
 		// Due to a change in LiveJournal.com's cookie handling, we have to do this hacky login in order to hit up cookie headers directly
-		if(this_account.site_info.name == 'LiveJournal')
+		if(site_info.name == 'LiveJournal')
 		{
 			params = "user=" + this_account.username +
 					"&chal=" + challenge +
@@ -117,7 +119,7 @@ function loginas(this_account, callback)
 		}
 		// All other implementations of LJ code seem to use the documented behavior, so this works just fine.
 		else
-			conn.open("POST", this_account.site_info.interfaceurl, true);
+			conn.open("POST", site_info.interfaceurl, true);
 		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		conn.onreadystatechange = function() {
 			if (conn.readyState == 4 && conn.status == 200) loginas_callback(this_account, callback, conn);
@@ -126,17 +128,18 @@ function loginas(this_account, callback)
 	});
 }
 function loginas_callback (this_account, callback, conn) {
+	var site_info = get_config_site_info(this_account.site_info);
 	console.log("Login negotiations completed.  Saving session data.");
 	
 	// Now let's see what we're supposed to do post-login, and then do that
 	console.log("RELOAD?");
 	if (localStorage["login_action"] == "current") {
-        chrome.tabs.query({active: true, currentWindow: true, "url":"*://*" + this_account.site_info.domain + "/*"}, function(tab) {
+        chrome.tabs.query({active: true, currentWindow: true, "url":"*://*" + site_info.domain + "/*"}, function(tab) {
                 chrome.tabs.reload(tab.id);
                 });
         }
 	else if (localStorage["login_action"] == "all") {
-		chrome.tabs.query({"url":"*://*" + this_account.site_info.domain + "/*"}, function(tabs) {
+		chrome.tabs.query({"url":"*://*" + site_info.domain + "/*"}, function(tabs) {
 			tabs.forEach(function (tab) {
 				chrome.tabs.reload(tab.id);
 			});
@@ -148,13 +151,14 @@ function loginas_callback (this_account, callback, conn) {
 }
 function save_cookie_data(this_account, conn)
 {
+	var site_info = get_config_site_info(this_account.site_info);
 	// Due to an undocumented change in the way LiveJournal.com handles cookies, they have to be parsed in a completely different manner.  Yay.
-	if(this_account.site_info.name == 'LiveJournal')
+	if(site_info.name == 'LiveJournal')
 	{
 		// We've hit /login.bml directly, so the cookies have now set themselves.  (All of them, not just the login ones, nothing breaks, but ugh is it inefficient.)
 
 		// We do need to manually extract the cookies so that we can get the user's uid.
-		chrome.cookies.get({"url":this_account.site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
+		chrome.cookies.get({"url":site_info.cookieurl, "name":"ljmastersession"}, function(cookie){
 			if (cookie) {
 				this_account.uid = cookie.value.split(":")[1];
 				update_account(this_account);
@@ -168,8 +172,8 @@ function save_cookie_data(this_account, conn)
 		var ljloggedin = ljsession.split(":")[1] + ":" + ljsession.split(":")[2];
 
 		var now = +new Date() / 1000;
-		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":this_account.site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
-		chrome.cookies.set({"url":this_account.site_info.cookieurl, "domain":this_account.site_info.domain, "name":"ljloggedin", "value":ljloggedin, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":site_info.cookieurl, "domain":site_info.domain, "name":site_info.cookiename, "value":ljsession, "expirationDate":(now + 60*60*24*365)});
+		chrome.cookies.set({"url":site_info.cookieurl, "domain":site_info.domain, "name":"ljloggedin", "value":ljloggedin, "expirationDate":(now + 60*60*24*365)});
 		this_account.uid = ljsession.split(":")[1];
 		update_account(this_account);
 	}
@@ -297,5 +301,13 @@ function find_in_array(array, value)
 		}
 	}
 	return false
+}
+// Take a site info value and pull the raw config value of that site info
+// Important in cases where site info changes after an account is saved to localStorage
+// Strictly speaking we should really overhaul this whole approach, but I'm not willing
+// to open that can of worms yet.
+function get_config_site_info(site_info)
+{
+	return LJlogin_keys[site_info.name];
 }
 window.onload=function() { page_loaded(); };
