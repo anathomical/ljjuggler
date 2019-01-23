@@ -4,7 +4,6 @@ function page_loaded()
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse)
 		{
-			var site_info = get_config_site_info(request.account.site_info);
 			if(request.command == "logout")
 			{
 				console.log("Logging out...");
@@ -18,6 +17,7 @@ function page_loaded()
 			}
 			else if(request.command == "login" || request.command == "newAccount")
 			{
+				var site_info = get_config_site_info(request.account.site_info);
 				console.log("Logging in as... " + request.account.username);
 				chrome.cookies.get({"url":site_info.cookieurl,"name":site_info.cookiename}, function(cookie) {
 					logout_this_cookie(cookie, function() {
