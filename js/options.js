@@ -1,3 +1,45 @@
+	// function to change the theme and remember the setting in local storage
+function setTheme() {
+	let color = document.getElementById("theme").value;
+	let bodyElement = document.getElementsByTagName("body")[0];
+
+	bodyElement.className = color;
+	return color
+}
+
+function saveThemeChoice(color) {
+	chrome.runtime.sendMessage({"command":"localStorage","mode":"set","key":"theme","value":color})
+}
+
+// function to export accounts to file
+function exportAccounts() {
+	chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (list)
+	{
+		let accounts = new Blob([JSON.stringify(list.value)], {type: 'application/json;base64'});
+		let url = URL.createObjectURL(accounts);
+		// let url = 'data:application/json;base64,' + btoa(accounts);
+
+	chrome.downloads.download({
+		url: url,
+		filename: 'juggler_accounts.json'
+	});
+});
+}
+
+// functions to import account list saved as json file
+function handleFile() {
+	let file = document.getElementById("browse").files[0]
+	let reader = new FileReader();
+	reader.onload = importAccounts;
+	reader.readAsText(file);
+}
+function importAccounts()	{
+		let json = JSON.parse(this.result);
+		chrome.runtime.sendMessage({"command":"localStorage","mode":"set","key":"lj_juggler_accounts","value":json});
+		drawlist();
+		document.getElementById("browse").value = '';
+	}
+
 function drawlist()
 {
 	chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
@@ -7,7 +49,7 @@ function drawlist()
 		account_list.sort(accountsort);
 		document.getElementById("account-list").innerHTML = "";
 
-		current_site = "";		
+		current_site = "";
 		for(var i = 0; i < account_list.length; i++)
 		{
 			// If this is the first account from this site, add a heading for the site.
@@ -28,20 +70,19 @@ function drawlist()
 			next_account.appendChild(delete_button);
 			document.getElementById("account-list").appendChild(next_account);
 		}
-		
+
 		document.getElementById("new_account").addEventListener('submit', function(event) {
 			event.preventDefault();
 			save_new_account();
 		});
-		
 		chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"login_action"}, function (response) {
 			document.getElementById("login_action").value = response.value;
 		});
 		document.getElementById("login_action").addEventListener('change', function(event) {
-			
+
                         chrome.runtime.sendMessage({"command":"localStorage","mode":"set","key":"login_action","value":event.target.value});
 		});
-		
+
 		document.getElementById("username").focus();
 	});
 }
@@ -93,6 +134,9 @@ function save_new_account()
 }
 function initialize()
 {
+	chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"theme"}, function (response) {document.getElementById("theme").value = response.value
+	setTheme();
+	})
 	for(var i = 0; i < LJlogin_sites.length; i++)
 	{
 		var site = LJlogin_sites[i];
@@ -102,6 +146,18 @@ function initialize()
 		document.getElementById("sitedropdown").appendChild(next_option);
 	}
 	drawlist();
+	// listeners for when theme change, export, and import buttons are clicked
+	document.getElementById("subtheme").addEventListener('click', function() {
+		let color = setTheme();
+		saveThemeChoice(color);
+	})
+	document.getElementById("export").addEventListener('click', function() {
+		exportAccounts();
+	})
+
+	document.getElementById("import").addEventListener('click', function() {
+		handleFile();
+	})
 }
 function accountsort(account_one, account_two)
 {
