@@ -10,25 +10,46 @@ body {
 	list-style-type: none;
 	width: 100%;
 }
+body.dark {
+	background-color: #1b1b1b;
+	color: #DED9D9;
+}
+/* This table crap is to get the contents to vertically align, since they won't otehrwise :( */
+#table {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+#page {
+  display: table-cell;
+  vertical-align: middle;
+}
 .wrapper {
 	background-color: #fdfdfd;
 	text-align: left;
-	padding: 5px 10px 5px 10px;
+	padding: 5px 18px 5px 18px;
 	width: auto;
-        border: 1px solid #c9cacb;
+  border: 1px solid #c9cacb;
 	border-radius: 10px;
 	display: inline-block;
 	position: relative;
 }
+.dark .wrapper {
+	background-color: #252525;
+	border: 1px solid #9b9b9b;
+}
 .popup-wrapper {
-        background-color: #fdfdfd;
+  background-color: #fdfdfd;
 	text-align: left;
 	padding: 5px 10px 5px 10px;
 	width: auto;
-        border: 1px solid #c9cacb;
+  border: 1px solid #c9cacb;
 	border-radius: 10px;
 	display: inline-block;
 	position: relative;
+}
+.dark .popup-wrapper {
+	background-color: #252525;
 }
 a {
 	color: inherit;
@@ -36,15 +57,21 @@ a {
 }
 p {
 	clear: both;
-	color: #666;
-	font-size: 0.6em;
-	text-align: center;
+	font-size: 0.7em;
+	padding-left: 10px;
 }
 p a:hover {
 	text-decoration: underline;
 }
+p.desc {
+	text-align: center;
+	color: #8c8c8c;
+}
 ul {
 	padding: 0; margin: 0;
+}
+#new_account {
+	text-align: left;
 }
 #option_list {
 	border-top: 1px solid #d9dadb;
@@ -55,14 +82,24 @@ ul li {
 	font-size: 0.9em;
 	font-weight: bold;
 	margin: 2px;
-	padding: 2px 0 2px 19px;
+	padding: 5px 0 2px 19px;
+}
+.dark ul li {
+	color: #efefef;
 }
 #user_list li {
 	background: url(/images/user.png) no-repeat 4px center;
 	cursor: pointer;
 }
+.dark #user_list li {
+	color: #9b9b9b;
+	background: url(/images/user-dark.png) no-repeat 4px center;
+}
 #user_list li:hover {
 	background: #ddd url(/images/user_hover.png) no-repeat 4px center;
+	color: #147a23;
+}
+.dark #user_list li:hover {
 	color: #147a23;
 }
 #user_list li.select {
@@ -71,6 +108,9 @@ ul li {
 	font-style: italic;
 	color: #217a86;
 }
+.dark #user_list li.select {
+	color: #4285f4;
+}
 #user_list li.select:hover {
 	background-color: #ddd;
 }
@@ -78,9 +118,16 @@ ul li {
 	cursor: pointer;
 	font-weight: normal;
 }
+.dark #option_list li {
+	color: #9b9b9b;
+}
 #option_list li:hover {
 	background-color: #ddd;
 	color: #b30000;
+}
+.dark #option_list li:hover {
+	background-color: #ddd;
+	color: #4285f4;
 }
 .site-label {
 	color: #666;
@@ -88,6 +135,10 @@ ul li {
 	font-size: 0.8em;
 	padding: 4px;
 	text-align: center;
+	font-weight: bold;
+}
+.dark .site-label {
+	color: #9b9b9b;
 }
 button {
 	background: url(/images/deleteaccount.png) no-repeat center center;
@@ -103,28 +154,29 @@ button:hover {
 	background: url(/images/deleteaccount_hover.png) no-repeat center center;
 }
 label {
-	font: 0.7em Verdana, Helvetica, sans-serif;
+	font: 0.8em Verdana, Helvetica, sans-serif;
 	line-height: 1em;
 	display: inline;
-	float: left;
 	text-align: right;
-	padding: 4px 10px 4px 0;
-	width: 80px;
+	float: left;
+	padding: 6px 10px 4px 0;
+	width: 100px;
 }
 #sitedropdown, #username, #password {
 	margin-top: 5px;
-	display: block;
 	border: 1px solid #7a7a7b;
 	background-color: #fafafa;
-	width: 120px;
+	width: 140px;
 }
 #sitedropdown:hover, #username:hover, #password:hover {
-	border: 1px solid #000;
 	background-color: #f0f0f9;
 }
 #sitedropdown:focus, #username:focus, #password:focus {
-	border: 1px solid #000;
 	background-color: #f0f0f0;
+}
+.dark #sitedropdown, .dark #username, .dark #password {
+	background-color: #424242;
+	color: #DED9D9;
 }
 .submit {
 	background: #e9eaeb url(/images/addaccount.png) no-repeat 6px 50%;
@@ -135,6 +187,10 @@ label {
 	padding: 4px 6px 4px 26px;
 	border: 1px solid #c9cacb;
 	width: auto;
+}
+.dark .submit {
+	background: #424242 url(/images/addaccount.png) no-repeat 6px 50%;
+	color: #DED9D9;
 }
 .submit:hover {
 	color: #147a23;
@@ -157,10 +213,12 @@ h2 {
 	padding: 0;
 }
 h3 {
-	padding-left: 18px;
 	font-size: 0.9em;
 	color: #217a86;
-	font-weight: normal;
+	font-weight: bold;
+}
+h3.dark {
+	color: #30b1c2;
 }
 hr {
 	width: 75%;
