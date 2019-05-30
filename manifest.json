@@ -13,14 +13,12 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-
   "browser_specific_settings": {
     "gecko": {
       "id": "ljjuggler@andontie.net",
       "strict_min_version": "57.0"
     }
   },
-
   "browser_action":
   {
   "default_icon":"images/icon19.png",
