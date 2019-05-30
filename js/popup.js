@@ -1,6 +1,10 @@
-function page_loaded()
-{
+function setTheme(color) {
+	let bodyElement = document.getElementsByTagName("body")[0];
+
+	bodyElement.className = color;
+	return color
 }
+
 function click_logout_div()
 {
 	chrome.runtime.sendMessage({"command":"logout"});
@@ -11,7 +15,7 @@ function click_this_user_div(this_account)
 	chrome.runtime.sendMessage({"command":"login","account":this_account});
 	window.close();
 }
-	
+
 function generate_option(this_account)
 {
 	var this_element = document.createElement("li");
@@ -19,7 +23,7 @@ function generate_option(this_account)
 	this_element.id = this_account.site_info.name + this_account.username;
 	this_element.textContent = this_account.username;
 	this_element.onclick = function (this_account)
-	{ 
+	{
 		return function ()
 		{
 			click_this_user_div(this_account);
@@ -44,13 +48,17 @@ function accountsort(account_one, account_two)
 }
 window.onload = function()
 {
+	chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"theme"}, function (response) {
+		// Below the setTheme function runs using the value of the response we got from above when we looked in local storage to see what the theme was set to. when you put .value at the end of a thing, it gets the value of that thing
+		setTheme(response.value);
+	})
 	// First dynamically build the page.
 	chrome.runtime.sendMessage({"command":"localStorage","mode":"get","key":"lj_juggler_accounts"}, function (response)
 	{
 		var account_list = [];
 		if(response.value != undefined) account_list = JSON.parse(response.value);
 		account_list.sort(accountsort);
-		
+
 		var current_site = '';
 		for(var i = 0; account_list[i]; i++)
 		{

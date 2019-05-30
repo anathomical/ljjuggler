@@ -1,26 +1,38 @@
 <html>
 	<head>
 		<title>LJ Juggler Change Log</title>
-		
+
 		<link rel="stylesheet" type="text/css" href="css/changelog.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 	<body>
 
 		<center><h1>LJ Juggler</h1>
-                
+
             <div class="wrapper">
-            
+
                 <center><p>A Google Chrome and Mozilla Firefox extension for switching between user accounts on LiveJournal-based websites.</p>
 		<p><a href="http://rushin-doll.net/lj-juggler/">http://rushin-doll.net/lj-juggler/</a></p>
 		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.</center>
-		
+
+			<h3>Version 4.0.5 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
+			<p>User-facing</p>
+			<ul>
+				<li>Added a dark theme to save everyone's eyes.</li>
+				<li>Implemented the option to import/export your account lists. This feature works across both browsers, so a list exported from Firefox will work in Chrome and vice versa.</li>
+			</ul>
+			<p>Behind-the-scenes</p>
+			<ul>
+				<li>As of this release, thanks to some chanages to the manifest--you must now have Firefox 57 or newer (if you don't you really need to update...) to use our extension--and some modfications to the popup and options pages, LJ Juggler now works in Firefox for Android! There is still some work to be done (selecting a new account works but the popup page does not automatically close), but feel free to try it out!</li>
+			</ul>
+
                 <h3>Version 4.0.4 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
 			<p>User-facing</p>
 			<ul>
 			</ul>
 			<p>Behind-the-scenes</p>
 			<ul>
-				<li>Updated the way that the extension retrieves connection information.  Previously, it was based on what the config said when the specific account was created, not what the config currently is set up for.  This meant that if an account was set up before a config change went through (see 4.0.3), the extension would continue to use the old config.  A recent (good) change to DreamWidth's security policies surfaced the issue, and the new approach should resolve it.</li>
+				<li>Updated the way that the extension retrieves connection information.  Previously, it was based on what the config said when the specific account was created, not what the config currently is set up for.  This meant that if an account was set up before a config change went through (see 4.0.3), the extension would continue to use the old config.  A recent (good) change to DreamWidth's security policies surfaced the issue, and the new approach should resolve it.  This seems to have also fixed a related issue that was preventing Firefox from logging into Dreamwidth accounts at all.  Not sure why exactly that was happening, but it it's been resolved.</li>
             		</ul>
 
                 <h3>Version 4.0.3 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
@@ -39,7 +51,7 @@
 			<p>Behind-the-scenes</p>
 			<ul>
 				<li>Fixed an odd packaging error in the Chrome web store so the extension should be installable again for Chrome.</li>
-                        </ul>		
+                        </ul>
 
                 <h3>Version 4.0.1 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
 			<p>User-facing</p>
@@ -53,8 +65,8 @@
 				<li><strong>First release of Mozilla Firefox port</strong>, compatible with version 46.0 and above!  Thanks to the huge effort put in by Holly (<a href="http://frau_kali.dreamwidth.org">http://frau_kali.dreamwidth.org</a>) to make this happen.</li>
 				<li>As Mozilla moves to adopt the Chrome method for building extensions, we've been able to make updates to the extension code to make it work on both platforms, so we've refactored a ton of API calls from deprecated ones to the new forms that are supported in both Chrome and Firefox.</li>
 				<li>Refactored all of our AJAX calls to use asynchronous callback patterns instead of the old synchronous calls we had in place.</li>
-                        </ul>		
-		
+                        </ul>
+
 		<h3><a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Version 3.4.1</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -63,7 +75,7 @@
 			<ul>
 				<li>Add support for managing accounts on the Scribbld.us domain.</li>
 			</ul>
-		
+
 		<h3><a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Version 3.4.0</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -74,7 +86,7 @@
 				<li>The plumbing to support reloading, and to make sure we only reload the correct tabs.</li>
 				<li>Moving around a number of pieces of code to bring the codebase more in line with Chrome's new security guidelines for extensions.</li>
 			</ul>
-		
+
 		<h3><a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Version 3.3.0</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -83,7 +95,7 @@
 			<ul>
 				<li>Updated the manifest.json file to re-enable searchability within the Google Chrome Store now that extensions can only be installed from there.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-2-0.crx">Version 3.2.0</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -107,7 +119,7 @@
 				<li>Clean up some of the JS code to make it more readable.</li>
 				<li>Eliminate redundant CSS shared between options.html and popup.html to further unify their visual styles.</li>
 			</ul>
-	
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-1-2.crx">Version 3.1.2</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -117,7 +129,7 @@
 				<li>Apparently I was a bit overzealous and that didn't actually fix the issue.  Ugh.  So reverting the revert.  Back to the hackery!</li>
 				<li>On the possibly bright side, I took this opportunity to implement what I think is a fix to the not-keeping-you-logged-in-between-browser-sessions bug.  So yay?</li>
 			</ul>
-	
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-1-1.crx">Version 3.1.1</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -135,7 +147,7 @@
 			<ul>
 				<li>A great amount of hackery in order to allow logging in with LJ's new cookie system.  The levels of hackery are ridiculous, but hopefully they work and will end up being invisible to users.  A million, million thanks to Andrea Nall for not only telling me what LJ had done to break things, but also providing a great suggestion for how to fix things.  That help is the reason this got patched so soon as I was really not looking forward to diving into LJ's code to figure out what they did.  So thanks again!</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-0-7.crx">Version 3.0.7</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -156,7 +168,7 @@
 			</ul>
 
 
-			
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-0-5.crx">Version 3.0.5</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -176,7 +188,7 @@
 				<li>Fixed some really face-palmingly stupid bugs from 3.0.3.  Wow, that's embarrassing.</li>
 			</ul>
 
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-0-3.crx">Version 3.0.3</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -186,7 +198,7 @@
 				<li>Cleaned up the code's file organization.</li>
 				<li>Built a git branch for google's official extension repository so that it's easier to keep users who download from there up-to-date.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-0-2.crx">Version 3.0.2</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -196,7 +208,7 @@
 			<p>Behind-the-scenes</p>
 			<ul>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-0-1.crx">Version 3.0.1</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -205,7 +217,7 @@
 			<ul>
 				<li>Modified a utility function in background.html to solve an issue where having the same username on multiple services caused data corruption and led to an error.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler3-0-0.crx">Version 3.0.0</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -218,7 +230,7 @@
 				<li>Early-stage LJ clone support.  The system now allows users to register accounts for LJ clone sites, not just LiveJournal.com.</li>
 				<li>Complete overhaul of the behind-the-scenes account highlighting logic.  It's significantly more efficient, and more accurate now.  It also handles highlighting for multiple accounts now.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-2-0.crx">Version 2.2.0</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -232,7 +244,7 @@
 				<li>Moved version check and update code into background.html.  This actually saves a LOT of CPU cycles since previously there was a fairly involved asynchronous version check every time you opened the Juggler window.</li>
 				<li>Some general code clean up that hopefully paves the way for adding support for LJ clone sites.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-1-2.crx">Version 2.1.2</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -242,13 +254,13 @@
 				<li>Added a feature to make site-scheme selection permanent.  In previous versions it was a session-length cookie and would expire (and need to be reset) when your browser closed.  Now if you set one, it'll stick around for a year.  Currently the system will use the same sitescheme for ALL accounts.  If different schemes for different accounts is really important to you, let me know and I'll see what I can do!</li>
 				<li>Fixed a bug in the cookie expiration calculator so now all cookies set last one year instead of until February of 40572 or some other insane date.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-1-1.crx">Version 2.1.1</a></h3>
 			<p>User-facing</p>
 			<ul>
 				<li>Tweaked CSS so that the mouse pointer stays as a pointer object rather than converting to a cursor when hovering over the user-option that you are currently logged in as.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-1-0.crx">Version 2.1.0</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -260,7 +272,7 @@
 				<li>Used an update check to move all the localStorage data to background.html's store so that it's in one place.</li>
 				<li>Tweaked popup.html and options.html so that they use the localStorage set up in background.html.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-0-4.crx">Version 2.0.4</a></h3>
 			<p>User-facing</p>
 			<ul>
@@ -275,19 +287,19 @@
 				<li>Extensive changes to the highlight logic code to make it more flexible and standardized.</li>
 				<li>Shifted the logout (and other option DIVs) from dynamic generation to static generation for easier non-coder modification/duplication.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-0-3.crx">Version 2.0.3</a></h3>
 			<p>User-facing:</p>
 			<ul>
 				<li>Minor tweaks for text visibility on non-Mac systems.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-0-1.crx">Version 2.0.1</a></h3>
 			<p>User-facing:</p>
 			<ul>
 				<li>User interface significantly prettified thanks to <a href="http://metanomaly.livejournal.com">Metanomaly</a>.</li>
 			</ul>
-		
+
 		<h3><a href="http://rushin-doll.net/lj-juggler/ljjuggler2-0-0.crx">Version 2.0.0</a></h3>
 			<p>User-facing:</p>
 			<ul>

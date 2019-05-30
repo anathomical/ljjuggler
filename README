@@ -1,7 +1,4 @@
-A port of the Chrome extension for Firefox to replace the defunct LJLogin, largely made possible and easier by Mozilla's new WebExtensions.
-
-Original README:
-LJ Juggler is an extension for Google Chrome that allows for easy switching between accounts.
+LJ Juggler is an extension for Google Chrome and Mozilla Firefox that allows for easy switching between accounts.
 
 It's a total hack-job.  While little actual code was used from the LJlogin project (http://ljlogin.e-space.gweep.net/), a large debt of gratitude is owed them since looking through their code helped with understanding the LiveJournal authenticaion process as well as figuring out how to structure this code.
 
