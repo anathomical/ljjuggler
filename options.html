@@ -1,18 +1,21 @@
 <html>
 	<head>
 		<title>LJ Juggler - Options</title>
-        
-	<link rel="stylesheet" type="text/css" href="css/main.css" />
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        		
+
+	<link id="style" rel="stylesheet" type="text/css" href="css/main.css">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	</head>
 	<body>
-                <script src="js/md5.js"></script>
+    <script src="js/md5.js"></script>
 		<script src="lj_site_definitions.js"></script>
 		<script src="js/options.js"></script>
-    
+
+		<section id="table">
+		<section id="page">
     <div class="wrapper">
-    
+
     	<h1>LJ Juggler</h1>
     	<h2>Account Management</h2>
     	<hr>
@@ -22,20 +25,34 @@
 		<h3>Add an account:</h3>
 		<form id="new_account">
 			<label>Site:</label> <select id="sitedropdown"></select>
-			<label>Username:</label> <input type="text" id="username">
-			<label>Password:</label> <input type="password" id="password">
-			<input type="submit" value="Add Account" class="submit">
+			<br><label>Username:</label> <input type="text" id="username">
+			<br><label>Password:</label> <input type="password" id="password">
+			<br><input type="submit" value="Add Account" class="submit">
 		</form>
-		<p>
-			Reload tabs on account change?
+		<br>
+		<h3>Options:</h3>
+			<p>Reload tabs on account change?
 			<select id="login_action">
 				<option value="">No</option>
 				<option value="current">Current Tab Only</option>
 				<option value="all">All Tabs</option>
 			</select>
-		</p>
+			<p>Import / Export Account List:
+				<br><input type="button" id="export" value="Export to file" class="ex">
+				<p>Import from file:
+				<br><input type="file" id="browse" accept=".json" class="im"> <input type="button" id="import" value="Import">
+			</p>
+			<p>LJ Jugger Theme:
+				<select id="theme">
+					<option value="light">Light</option>
+					<option value="dark">Dark</option>
+					<input type="button" id="subtheme" value="Change Theme">
+				</select>
+			</p>
 		<hr>
         <p class="desc"><a href="http://rushin-doll.net/lj-juggler/">About</a> | <a href="http://rushin-doll.net/lj-juggler/change-log.html">Changelog</a> | <a href="http://mistletotem.dreamwidth.org/">CSS</a></p>
 	</div>
+	</section>
+	</section>
 	</body>
 </html>
