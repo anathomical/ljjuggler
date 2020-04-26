@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name":"LJ Account Juggler",
-  "version":"4.1.0",
+  "version":"4.2.0",
   "description":"This addon lets users easily switch between accounts on LiveJournal-based websites.",
   "background":
   {
