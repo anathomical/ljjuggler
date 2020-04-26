@@ -101,31 +101,46 @@ function loginas(this_account, callback)
 	var site_info = get_config_site_info(this_account.site_info);
 	var conn = new XMLHttpRequest();
 	console.log("Beginning the login dance...");
-	getLJchallenge(site_info.interfaceurl, function (challenge) {
-		var response = md5(challenge + this_account.password);
-		var params = "mode=sessiongenerate" +
+	// As of 4/26/20 Dreamwidth no longer supports challenge/response with passwords
+	if (site_info.naem == "Dreammwidth") {
+	    var params = "mode=sessiongenerate" +
 					"&user=" + this_account.username +
-					"&auth_method=challenge" +
-					"&auth_challenge=" + challenge +
-					"&auth_response=" + response;
-		// Due to a change in LiveJournal.com's cookie handling, we have to do this hacky login in order to hit up cookie headers directly
-		if(site_info.name == 'LiveJournal')
-		{
-			params = "user=" + this_account.username +
-					"&chal=" + challenge +
-					"&response=" + response +
-					"&remember_me=1";
-			conn.open("POST", "http://www.livejournal.com/login.bml", true);
-		}
-		// All other implementations of LJ code seem to use the documented behavior, so this works just fine.
-		else
-			conn.open("POST", site_info.interfaceurl, true);
+					"&auth_method=clear" +
+					"&password=" + this_account.password;
+
+        conn.open("POST", site_info.interfaceurl, true);
 		conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		conn.onreadystatechange = function() {
 			if (conn.readyState == 4 && conn.status == 200) loginas_callback(this_account, callback, conn);
 		};
 		conn.send(params);
-	});
+	} else {
+        getLJchallenge(site_info.interfaceurl, function (challenge) {
+            var response = md5(challenge + this_account.password);
+            var params = "mode=sessiongenerate" +
+                        "&user=" + this_account.username +
+                        "&auth_method=challenge" +
+                        "&auth_challenge=" + challenge +
+                        "&auth_response=" + response;
+            // Due to a change in LiveJournal.com's cookie handling, we have to do this hacky login in order to hit up cookie headers directly
+            if(site_info.name == 'LiveJournal')
+            {
+                params = "user=" + this_account.username +
+                        "&chal=" + challenge +
+                        "&response=" + response +
+                        "&remember_me=1";
+                conn.open("POST", "http://www.livejournal.com/login.bml", true);
+            }
+            // All other implementations of LJ code seem to use the documented behavior, so this works just fine.
+            else
+                conn.open("POST", site_info.interfaceurl, true);
+            conn.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            conn.onreadystatechange = function() {
+                if (conn.readyState == 4 && conn.status == 200) loginas_callback(this_account, callback, conn);
+            };
+            conn.send(params);
+        });
+	}
 }
 function loginas_callback (this_account, callback, conn) {
 	var site_info = get_config_site_info(this_account.site_info);
