@@ -140,6 +140,10 @@ label /* add account form labels */ {
 	background: #424242 url(/images/addaccount.png) no-repeat 6px 50%;
 	color: #DED9D9;
 }
+.dark .submit:hover {
+	background: #676769 url(/images/addaccount_hover.png) no-repeat 6px 50%;
+	color: #DED9D9;
+}
 .submit:hover {
 	color: #147a23;
 	background: #f5f6f7 url(/images/addaccount_hover.png) no-repeat 6px 50%;
@@ -178,6 +182,10 @@ input[type=text], select, #browse, #password {
 }
 .dark #export, .dark #browse, .dark #import, .dark #subtheme {
 	background-color: #424242;
+	color: #DED9D9;
+}
+.dark #export:hover, .dark #import:hover, .dark #subtheme:hover {
+	background-color: #676769;
 	color: #DED9D9;
 }
 #export:hover, #import:hover, #subtheme:hover {
