@@ -102,7 +102,7 @@ function loginas(this_account, callback)
 	var conn = new XMLHttpRequest();
 	console.log("Beginning the login dance...");
 	// As of 4/26/20 Dreamwidth no longer supports challenge/response with passwords
-	if (site_info.naem == "Dreammwidth") {
+	if (site_info.name == "Dreamwidth") {
 	    var params = "mode=sessiongenerate" +
 					"&user=" + this_account.username +
 					"&auth_method=clear" +
