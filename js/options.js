@@ -17,7 +17,6 @@ function exportAccounts() {
 	{
 		let accounts = new Blob([JSON.stringify(list.value)], {type: 'application/json;base64'});
 		let url = URL.createObjectURL(accounts);
-		// let url = 'data:application/json;base64,' + btoa(accounts);
 
 	chrome.downloads.download({
 		url: url,

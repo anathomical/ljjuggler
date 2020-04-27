@@ -22,14 +22,37 @@
 		<h3>Accounts:</h3>
 		<ul id="account-list">
 		</ul>
-		<h3>Add an account:</h3>
-		<form id="new_account">
-			<label>Site:</label> <select id="sitedropdown"></select>
-			<br><label>Username:</label> <input type="text" id="username">
-			<br><label>Password:</label> <input type="password" id="password">
-			<br><input type="submit" value="Add Account" class="submit">
-		</form>
 		<br>
+		<h3>Add an account:</h3></p>
+		<form id="new_account">
+			<div class="row">
+				<div class="col-form">
+					<label>Site:</label>
+				</div>
+				<div class="col-element">
+					<select id="sitedropdown"></select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-form">
+					<label>Username:</label>
+				</div>
+				<div class="col-element">
+					<input type="text" id="username">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-form">
+					<label>Password:</label>
+				</div>
+				<div class="col-element">
+					<input type="password" id="password">
+				</div>
+			</div>
+			<div class="row">
+				<input type="submit" value="Add Account" class="submit">
+			</div>
+		</form>
 		<h3>Options:</h3>
 			<p>Reload tabs on account change?
 			<select id="login_action">
@@ -39,10 +62,9 @@
 			</select>
 			<p>Import / Export Account List:
 				<br><input type="button" id="export" value="Export to file" class="ex">
-				<p>Import from file:
+				<br>Import from file:
 				<br><input type="file" id="browse" accept=".json" class="im"> <input type="button" id="import" value="Import">
-			</p>
-			<p>LJ Jugger Theme:
+			<br>LJ Jugger Theme:
 				<select id="theme">
 					<option value="light">Light</option>
 					<option value="dark">Dark</option>
