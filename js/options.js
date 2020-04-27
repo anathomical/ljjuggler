@@ -112,7 +112,7 @@ function delete_account(username)
 function save_new_account()
 {
 	var username = document.getElementById("username").value;
-	var password = md5(document.getElementById("password").value);
+	var password = document.getElementById("password").value;
 	var site_info_index = document.getElementById("sitedropdown").value;
 	if(username && password)
 	{
