@@ -24,6 +24,8 @@ body.dark {
   display: table-cell;
   vertical-align: middle;
 }
+
+/*  options page CSS */
 .wrapper {
 	background-color: #fdfdfd;
 	text-align: left;
@@ -38,6 +40,164 @@ body.dark {
 	background-color: #252525;
 	border: 1px solid #9b9b9b;
 }
+#new_account {
+	text-align: left;
+}
+#option_list {
+	border-top: 1px solid #d9dadb;
+}
+#option_list li {
+	cursor: pointer;
+	font-weight: normal;
+}
+.dark #option_list li {
+	color: #9b9b9b;
+}
+#option_list li:hover {
+	background-color: #ddd;
+	color: #b30000;
+}
+.dark #option_list li:hover {
+	background-color: #ddd;
+	color: #4285f4;
+}
+.site-label {
+	color: #666;
+	cursor: default;
+	font-size: 0.8em;
+	padding: 4px;
+	text-align: center;
+	font-weight: bold;
+}
+.dark .site-label {
+	color: #9b9b9b;
+}
+button /* this is for the delete button */ {
+	background: url(/images/deleteaccount.png) no-repeat center center;
+	border: none;
+	cursor: pointer;
+	margin: 0 15px 0 4px;
+	padding: 0;
+	height: 14px;
+	width: 13px;
+	float: right;
+}
+button:hover {
+	background: url(/images/deleteaccount_hover.png) no-repeat center center;
+}
+p.desc {
+	text-align: center;
+	color: #8c8c8c;
+}
+#subtheme, #import {
+	float: right;
+}
+/* New account form CSS */
+#new_account {
+	margin: 0;
+}
+#sitedropdown, #username, #password {
+	width: 100%;
+}
+.dark #password {
+	background-color: #424242;
+	color: #DED9D9;
+}
+label /* add account form labels */ {
+	font: 0.8em Verdana, Helvetica, sans-serif;
+	display: inline-block;
+	padding: 5px 15px 5px 0px;
+}
+.col-form {
+	float: left;
+	text-align: right;
+	width: 25%;
+	margin-top: 6px;
+}
+.col-element {
+	float: left;
+	width: 35%;
+	margin-top: 6px;
+}
+/* Clear floats after the cols */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.submit {
+	background: #e9eaeb url(/images/addaccount.png) no-repeat 6px 50%;
+	font-size: 0.8em;
+	color: #000;
+	cursor: pointer;
+	float: right;
+	margin: 15px 0 1.5em 0;
+	padding: 4px 6px 4px 26px;
+	border: 1px solid #c9cacb;
+	width: auto;
+}
+.dark .submit {
+	background: #424242 url(/images/addaccount.png) no-repeat 6px 50%;
+	color: #DED9D9;
+}
+.dark .submit:hover {
+	background: #676769 url(/images/addaccount_hover.png) no-repeat 6px 50%;
+	color: #DED9D9;
+}
+.submit:hover {
+	color: #147a23;
+	background: #f5f6f7 url(/images/addaccount_hover.png) no-repeat 6px 50%;
+	border-color: #d9dadb;
+}
+/* Make it responsive: When the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .col-form, .col-element {
+    width: 45%;
+    margin-top: 0;
+  }
+}
+/* Form elements */
+input[type=text], select, #browse, #password {
+	border: 1px solid #7a7a7b;
+	background-color: #fafafa;
+	color: #000;
+	box-sizing: border-box;
+	resize: vertical;
+}
+.dark input[type=text], .dark select {
+	background-color: #424242;
+	color: #DED9D9;
+}
+#browse {
+	width: 75%;
+}
+#export, #import, #subtheme {
+	background-color: #e9eaeb;
+	color: #000;
+	cursor: pointer;
+	margin: 0 0 1.5em 0;
+	padding: 4px 6px 4px 4px;
+	border: 1px solid #c9cacb;
+	width: auto;
+}
+.dark #export, .dark #browse, .dark #import, .dark #subtheme {
+	background-color: #424242;
+	color: #DED9D9;
+}
+.dark #export:hover, .dark #import:hover, .dark #subtheme:hover {
+	background-color: #676769;
+	color: #DED9D9;
+}
+#export:hover, #import:hover, #subtheme:hover {
+	color: #147a23;
+	background-color: #f5f6f7;
+	border-color: #d9dadb;
+}
+#theme {
+	width: 25%;
+}
+
+/*  Popup page CSS */
 .popup-wrapper {
   background-color: #fdfdfd;
 	text-align: left;
@@ -50,42 +210,6 @@ body.dark {
 }
 .dark .popup-wrapper {
 	background-color: #252525;
-}
-a {
-	color: inherit;
-	text-decoration: none;
-}
-p {
-	clear: both;
-	font-size: 0.7em;
-	padding-left: 10px;
-}
-p a:hover {
-	text-decoration: underline;
-}
-p.desc {
-	text-align: center;
-	color: #8c8c8c;
-}
-ul {
-	padding: 0; margin: 0;
-}
-#new_account {
-	text-align: left;
-}
-#option_list {
-	border-top: 1px solid #d9dadb;
-}
-ul li {
-	color: #333333;
-	list-style-type: none;
-	font-size: 0.9em;
-	font-weight: bold;
-	margin: 2px;
-	padding: 5px 0 2px 19px;
-}
-.dark ul li {
-	color: #efefef;
 }
 #user_list li {
 	background: url(/images/user.png) no-repeat 4px center;
@@ -114,88 +238,33 @@ ul li {
 #user_list li.select:hover {
 	background-color: #ddd;
 }
-#option_list li {
-	cursor: pointer;
-	font-weight: normal;
-}
-.dark #option_list li {
-	color: #9b9b9b;
-}
-#option_list li:hover {
-	background-color: #ddd;
-	color: #b30000;
-}
-.dark #option_list li:hover {
-	background-color: #ddd;
-	color: #4285f4;
-}
-.site-label {
-	color: #666;
-	cursor: default;
-	font-size: 0.8em;
-	padding: 4px;
-	text-align: center;
+
+/* General CSS */
+ul li {
+	color: #333333;
+	list-style-type: none;
+	font-size: 0.9em;
 	font-weight: bold;
+	margin: 2px;
+	padding: 5px 0 2px 19px;
 }
-.dark .site-label {
-	color: #9b9b9b;
+.dark ul li {
+	color: #efefef;
 }
-button {
-	background: url(/images/deleteaccount.png) no-repeat center center;
-	border: none;
-	cursor: pointer;
-	margin: 0 15px 0 4px;
-	padding: 0;
-	height: 14px;
-	width: 13px;
-	float: right;
+a {
+	color: inherit;
+	text-decoration: none;
 }
-button:hover {
-	background: url(/images/deleteaccount_hover.png) no-repeat center center;
+p, br {
+	clear: both;
+	font-size: 0.7em;
+	padding-left: 10px;
 }
-label {
-	font: 0.8em Verdana, Helvetica, sans-serif;
-	line-height: 1em;
-	display: inline;
-	text-align: right;
-	float: left;
-	padding: 6px 10px 4px 0;
-	width: 100px;
+p a:hover {
+	text-decoration: underline;
 }
-#sitedropdown, #username, #password {
-	margin-top: 5px;
-	border: 1px solid #7a7a7b;
-	background-color: #fafafa;
-	width: 140px;
-}
-#sitedropdown:hover, #username:hover, #password:hover {
-	background-color: #f0f0f9;
-}
-#sitedropdown:focus, #username:focus, #password:focus {
-	background-color: #f0f0f0;
-}
-.dark #sitedropdown, .dark #username, .dark #password {
-	background-color: #424242;
-	color: #DED9D9;
-}
-.submit {
-	background: #e9eaeb url(/images/addaccount.png) no-repeat 6px 50%;
-	font-size: 0.8em;
-	cursor: pointer;
-	float: right;
-	margin: 15px 0 1.5em 0;
-	padding: 4px 6px 4px 26px;
-	border: 1px solid #c9cacb;
-	width: auto;
-}
-.dark .submit {
-	background: #424242 url(/images/addaccount.png) no-repeat 6px 50%;
-	color: #DED9D9;
-}
-.submit:hover {
-	color: #147a23;
-	background: #f5f6f7 url(/images/addaccount_hover.png) no-repeat 6px 50%;
-	border-color: #d9dadb;
+ul {
+	padding: 0; margin: 0;
 }
 h1 {
 	font-size: 1.3em;
@@ -216,6 +285,7 @@ h3 {
 	font-size: 0.9em;
 	color: #217a86;
 	font-weight: bold;
+	margin: 0;
 }
 h3.dark {
 	color: #30b1c2;

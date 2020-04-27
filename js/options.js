@@ -17,7 +17,6 @@ function exportAccounts() {
 	{
 		let accounts = new Blob([JSON.stringify(list.value)], {type: 'application/json;base64'});
 		let url = URL.createObjectURL(accounts);
-		// let url = 'data:application/json;base64,' + btoa(accounts);
 
 	chrome.downloads.download({
 		url: url,
@@ -113,7 +112,7 @@ function delete_account(username)
 function save_new_account()
 {
 	var username = document.getElementById("username").value;
-	var password = md5(document.getElementById("password").value);
+	var password = document.getElementById("password").value;
 	var site_info_index = document.getElementById("sitedropdown").value;
 	if(username && password)
 	{

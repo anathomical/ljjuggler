@@ -15,16 +15,29 @@
 		<p><a href="http://rushin-doll.net/lj-juggler/">http://rushin-doll.net/lj-juggler/</a></p>
 		<p>As always, feel free to send questions, concerns, comments, or suggestions via email to <a href="mailto:rushin.doll@gmail.com">rushin.doll@gmail.com</a>.</center>
 
-			<h3>Version 4.0.5 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
-			<p>User-facing</p>
-			<ul>
-				<li>Added a dark theme to save everyone's eyes.</li>
-				<li>Implemented the option to import/export your account lists. This feature works across both browsers, so a list exported from Firefox will work in Chrome and vice versa.</li>
-			</ul>
-			<p>Behind-the-scenes</p>
-			<ul>
-				<li>As of this release, thanks to some chanages to the manifest--you must now have Firefox 57 or newer (if you don't you really need to update...) to use our extension--and some modfications to the popup and options pages, LJ Juggler now works in Firefox for Android! There is still some work to be done (selecting a new account works but the popup page does not automatically close), but feel free to try it out!</li>
-			</ul>
+                <h3>Version 5.0.0 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
+                <p>User-facing</p>
+                <ul>
+                	<li>Some minor visual tweaks to make life easier on mobile devices, especially in cases with larger text sizes</li>
+                </ul>
+                <p>Behind-the-scenes (MAJOR CHANGES)</p>
+                <ul>
+                	<li>Dreamwidth just deployed a significant set of upgrades to the way that they handle user passwords, which is a good thing.  Unfortunately, it has broken the way that LJ Juggler logs users in.  Doubly unfortunately, all fixes that we can think of involve re-entering all of your accounts.  Basically, LJ Juggler has not stored your passwords in plain text (which is a bit more secure) so we can't log you in automatically under the new system.  We know this is going to be hugely inconvenient, for which we're sorry, but there's nothing we can do about it, and the changes that Dreamwidth has made to security are a big step up for them.</li>
+                        <li>This version 5.0.0 represents a temporary work-around for the problems that the new system has introduced to the way we log users in.  Ultimately, we want to start using Dreamwidth's much more secure API key system that would mean we wouldn't have to store your passwords at all.  However, that would take longer, and we want to get this version out the door for those who need access to the working extension ASAP.</li>
+                        <li><b>WARNING</b>!  LJ Juggler stores its data in a manner that is accessible to people who have physical access to your computer (assuming they know what to look for).  Historically, we've stored your passwords as "cryptographic hashes" (using the MD5 algorithm) which means that people can't just see what your password is even if they have your computer and go looking for it.  This new approach will store your password in plain text.  So if someone gets your computer, and knows what to look for, they can see all of your LJ Juggler account passwords.</li>
+                        <li>We're hoping to introduce a much more secure option in the future, one that uses API keys in a way that means we don't have to store your password on the local computer at all, but that's not ready yet.  In the meantime, you can use this version, but be aware that you're taking on some risk in case someone gets physical access to your computer.</li>
+                </ul>
+
+                <h3>Version 4.1.0 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
+                <p>User-facing</p>
+                <ul>
+                	<li>Added a dark theme to save everyone's eyes.</li>
+                	<li>Implemented the option to import/export your account lists. This feature works across both browsers, so a list exported from Firefox will work in Chrome and vice versa.</li>
+                </ul>
+                <p>Behind-the-scenes</p>
+                <ul>
+                	<li>As of this release, thanks to some chanages to the manifest--you must now have Firefox 57 or newer (if you don't you really need to update...) to use our extension--and some modfications to the popup and options pages, LJ Juggler now works in Firefox for Android! There is still some work to be done (selecting a new account works but the popup page does not automatically close), but feel free to try it out!</li>
+                </ul>
 
                 <h3>Version 4.0.4 - <a href="https://chrome.google.com/webstore/detail/lj-account-juggler/jpfnihbghaikdicpdiciecbbdoegcfhc">Chrome</a> | <a href="https://addons.mozilla.org/en-US/firefox/addon/lj-account-juggler/">Firefox</a></h3>
 			<p>User-facing</p>
