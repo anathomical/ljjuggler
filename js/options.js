@@ -116,6 +116,10 @@ function save_new_account()
 	var site_info_index = document.getElementById("sitedropdown").value;
 	if(username && password)
 	{
+                // Non-Dreamwidth services can use challenge auth, so store password hash
+                if(LJlogin_sites[site_info_index].name != 'Dreamwidth') {
+                        password = md5(password);
+                }
 		chrome.runtime.sendMessage({"command":"newAccount","account":{"username":username,"password":password,"site_info":LJlogin_sites[site_info_index]}}, function (response)
 		{
 			if(response == "ok")
