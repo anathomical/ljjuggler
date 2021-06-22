@@ -18,9 +18,9 @@ var LJlogin_sites = [
 	{
 		name: 'InsaneJournal',
 		domain: '.insanejournal.com',
-		cookieurl: 'http://www.insanejournal.com/',
+		cookieurl: 'https://www.insanejournal.com/',
 		cookiename: 'ljmastersession',
-		interfaceurl: 'http://www.insanejournal.com/interface/flat',
+		interfaceurl: 'https://www.insanejournal.com/interface/flat',
 	},
 	{
 		name: 'Scribbld',
