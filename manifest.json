@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name":"LJ Account Juggler",
-  "version":"5.1.0",
+  "version":"5.3.0",
   "description":"This addon lets users easily switch between accounts on LiveJournal-based websites.",
   "background":
   {
@@ -32,7 +32,6 @@
 	"tabs",
 	"cookies",
   "downloads",
-  "storage",
 	"http://*.dreamwidth.org/*",
 	"https://*.dreamwidth.org/*",
 	"http://*.livejournal.com/*",
