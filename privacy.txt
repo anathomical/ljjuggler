@@ -1,0 +1,1 @@
+LJ Juggler does not actually collect any data from users.  By not having your data, we ensure that we can't misuse it.  So you shouldn't worry about weird people getting your data from us.  We don't have it to give to them.
