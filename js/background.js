@@ -129,7 +129,7 @@ function loginas(this_account, callback)
                         "&chal=" + challenge +
                         "&response=" + response +
                         "&remember_me=1";
-                conn.open("POST", "http://www.livejournal.com/login.bml", true);
+                conn.open("POST", "https://www.livejournal.com/login.bml", true);
             }
             // All other implementations of LJ code seem to use the documented behavior, so this works just fine.
             else
@@ -230,6 +230,9 @@ function logout_this_cookie_callback(cookie, callback, conn) {
 	chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljsession"});
 	chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
 	chrome.cookies.remove({"url":"http://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
+	chrome.cookies.remove({"url":"https://www" + cookie.domain + cookie.path,"name":"ljsession"});
+	chrome.cookies.remove({"url":"https://www" + cookie.domain + cookie.path,"name":"ljloggedin"});
+	chrome.cookies.remove({"url":"https://www" + cookie.domain + cookie.path,"name":"ljmastersession"});
 	if (callback) callback(conn);
 
 }

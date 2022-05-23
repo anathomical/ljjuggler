@@ -32,13 +32,9 @@
 	"tabs",
 	"cookies",
   "downloads",
-	"http://*.dreamwidth.org/*",
 	"https://*.dreamwidth.org/*",
-	"http://*.livejournal.com/*",
 	"https://*.livejournal.com/*",
-	"http://*.insanejournal.com/*",
 	"https://*.insanejournal.com/*",
-  "http://*.scribbld.com/*",
 	"https://*.scribbld.com/*"
   ]
 }
